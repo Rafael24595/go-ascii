@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"go-ascii/src/commons/utils"
+	"image/gif"
 	"image/png"
 	"io"
 	"os"
@@ -18,29 +19,51 @@ func Encoder(file *os.File) (encode string) {
 }
 
 func encodeByExtension(buffer bytes.Buffer, extension string) (encode string) {
-	var data []byte
 	var buf bytes.Buffer
-
-	decode := decodeByExtension(buffer, extension)
 	switch extension {
 		case "image/jpeg", "image/jpg":
-			if err := png.Encode(&buf, decode); err != nil {
-				panic(err)
-			}
+			buf = encodeJpg(buffer)
 		case "image/gif":
-			if err := png.Encode(&buf, decode); err != nil {
-				panic(err)
-			}
+			buf = encodeGif(buffer)
 		case "image/png":
-			if err := png.Encode(&buf, decode); err != nil {
-				panic(err)
-			}
+			buf = encodePng(buffer)
 		default:
 			panic("unknown file type uploaded")
 	}
-
-	data = buf.Bytes()
+	data := buf.Bytes()
 	encode = base64.StdEncoding.EncodeToString(data)
+	return
+}
 
+func encodeJpg(buffer bytes.Buffer) (buf bytes.Buffer) {
+	decode, err := gif.DecodeAll(&buffer)
+	if err != nil {
+		panic(err)
+	}
+	if err := gif.EncodeAll(&buf, decode); err != nil {
+		panic(err)
+	}
+	return
+}
+
+func encodeGif(buffer bytes.Buffer) (buf bytes.Buffer) {
+	decode, err := gif.DecodeAll(&buffer)
+	if err != nil {
+		panic(err)
+	}
+	if err := gif.EncodeAll(&buf, decode); err != nil {
+		panic(err)
+	}
+	return
+}
+
+func encodePng(buffer bytes.Buffer) (buf bytes.Buffer) {
+	decode, err := png.Decode(&buffer)
+	if err != nil {
+		panic(err)
+	}
+	if err := png.Encode(&buf, decode); err != nil {
+		panic(err)
+	}
 	return
 }

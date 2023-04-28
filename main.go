@@ -11,7 +11,7 @@ import (
 
 func main() {
 	/*** Base64 request ***/
-	f, err := os.Open("golang.png")
+	f, err := os.Open("golang.gif")
 	if err != nil {
 		panic(err)
 	}
@@ -26,7 +26,7 @@ func main() {
 		panic(err)
 	}
 	
-	img := image.Decoder(temp)
+	img := image.Decode(temp)
 	scaleHeight := 115
 	scaleWidth := 0
 	grayScale := constants.GrayScaleLevels["default"]
