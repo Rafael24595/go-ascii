@@ -1,25 +1,30 @@
-package dimensions
+package scale
 
-import "image"
+import (
+	"go-ascii/src/domain/ascii/collection"
+)
 
 type ImageScale struct {
-	Image image.Image
+	Images collection.ImagesCollection
 	ScaleHeight float64
 	ScaleWidth  float64
 }
 
-func NewImageScale(img image.Image, scaleHeight int, scaleWidth int) (scale ImageScale) {
-	scale = ImageScale{Image: img, ScaleHeight: float64(scaleHeight), ScaleWidth: float64(scaleWidth)}
+func NewImageScale(imgs collection.ImagesCollection, scaleHeight int, scaleWidth int) (scale ImageScale) {
+	scale = ImageScale{Images: imgs, ScaleHeight: float64(scaleHeight), ScaleWidth: float64(scaleWidth)}
 	return
 }
 
 func GetScaleX(this ImageScale) (scaleX float64) {
 	scaleX = 0
 	if this.ScaleHeight != 0 {
-		scaleX = getImageHeight(this) / this.ScaleHeight
+		height := collection.GetImageHeight(this.Images)
+		scaleX = height / this.ScaleHeight
 	} else if this.ScaleWidth != 0 {
+		height := collection.GetImageHeight(this.Images)
+		width := collection.GetImageWidth(this.Images)
 		scaleY := GetScaleY(this)
-		scaleX = (scaleY / getImageWidth(this)) *  getImageHeight(this)
+		scaleX = (scaleY / width) *  height
 	}
 	return
 }
@@ -27,20 +32,13 @@ func GetScaleX(this ImageScale) (scaleX float64) {
 func GetScaleY(this ImageScale) (scaleY float64) {
 	scaleY = 0
 	if this.ScaleWidth != 0 {
-		scaleY = getImageWidth(this) / this.ScaleWidth
-	} else  if this.ScaleHeight != 0 {
+		width := collection.GetImageWidth(this.Images)
+		scaleY = width / this.ScaleWidth
+	} else if this.ScaleHeight != 0 {
+		width := collection.GetImageWidth(this.Images)
+		height := collection.GetImageHeight(this.Images)
 		scaleX := GetScaleX(this)
-		scaleY = (scaleX / getImageHeight(this)) *  getImageWidth(this)
+		scaleY = (scaleX / height) *  width
 	}
-	return
-}
-
-func getImageHeight(this ImageScale) (width float64) {
-	width = float64(this.Image.Bounds().Dx())
-	return
-}
-
-func getImageWidth(this ImageScale) (height float64) {
-	height = float64(this.Image.Bounds().Dy())
 	return
 }
