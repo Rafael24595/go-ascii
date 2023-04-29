@@ -1,7 +1,7 @@
 package scale
 
 import (
-	"go-ascii/src/domain/ascii/collection"
+	"go-ascii/src/domain/ascii/builder/collection"
 )
 
 type ImageScale struct {

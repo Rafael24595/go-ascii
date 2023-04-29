@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"bytes"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -14,6 +16,14 @@ func ReaderExtension(reader io.Reader) (extension string) {
 	}
 
 	extension = http.DetectContentType(data)
+	return
+}
+
+func FileExtension(file *os.File) (extension string) {
+	var buffer bytes.Buffer
+    reader := io.TeeReader(file, &buffer)
+	extension = ReaderExtension(reader)
+	extension = strings.Split(extension, ";")[0]
 	return
 }
 
