@@ -12,11 +12,11 @@ func NewImagesCollection(imgs []image.Image) (collection ImagesCollection) {
 }
 
 func GetImageHeight(this ImagesCollection) (width float64) {
-	width = float64(this.Images[0].Bounds().Dx())
+	width = float64(this.Images[0].Bounds().Dy())
 	return
 }
 
 func GetImageWidth(this ImagesCollection) (height float64) {
-	height = float64(this.Images[0].Bounds().Dy())
+	height = float64(this.Images[0].Bounds().Dx())
 	return
 }
