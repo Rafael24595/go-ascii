@@ -1,9 +1,9 @@
 package tempsource
 
 import (
-	"encoding/base64"
 	"os"
 	"strings"
+	"encoding/base64"
 )
 
 var temps = []string{}

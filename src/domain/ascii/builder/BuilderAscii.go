@@ -1,12 +1,12 @@
 package builder
 
 import (
+	"image"
+	"image/draw"
+	"image/color"
 	"go-ascii/src/domain/ascii"
 	"go-ascii/src/domain/ascii/builder/collection"
 	"go-ascii/src/domain/ascii/builder/scale"
-	"image"
-	"image/color"
-	"image/draw"
 )
 
 type BuilderAscii struct {
@@ -23,7 +23,7 @@ func NewBuilderAscii(imgs []image.Image, scaleHeight int, scaleWidth int, graySc
 
 func (this BuilderAscii) Build() (imageAscii ascii.ImageAscii) {
 	imageAscii = ascii.NewImageAscii("", "", []string{})
-	for i, _ := range this.Images.Images {
+	for i := range this.Images.Images {
 		frame := this.buildFrame(i)
 		//frame = utils.CleanScapeChars(frame)
 		imageAscii.Frames = append(imageAscii.Frames, frame)

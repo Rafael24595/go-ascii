@@ -1,6 +1,8 @@
 package service
 
 import (
+	"os"
+	"path/filepath"
 	"go-ascii/src/commons/constants"
 	"go-ascii/src/commons/temp-source"
 	"go-ascii/src/commons/utils"
@@ -9,33 +11,32 @@ import (
 	"go-ascii/src/domain/ascii/builder"
 	"go-ascii/src/infrastructure/dto"
 	"go-ascii/src/infrastructure/repository"
-	"os"
-	"path/filepath"
 )
 
 type Service struct {
-	repository repository.Repository
+	queryRepository repository.QueryRepository
+	commandRepository repository.CommandRepository
 }
 
-func NewService(repository repository.Repository) Service {
-	return Service{repository: repository}
+func NewService(queryRepository repository.QueryRepository, commandRepository repository.CommandRepository) Service {
+	return Service{queryRepository: queryRepository, commandRepository: commandRepository}
 }
 
-func (this Service) FindAllAscii() (result string) {
-	return this.repository.FindAllAscii()
+func (this Service) FindAllAscii() []string {
+	return this.queryRepository.FindAllAscii()
 }
 
 func (this Service) FindAscii(code string) ascii.ImageAscii {
-	image := this.repository.FindAscii(code)
+	image := this.queryRepository.FindAscii(code)
 	return image
 }
 
 func (this Service) InsertAscii(dto dto.AsciiRequest) string {
-	imageAscii := create(dto)
-	return this.repository.InsertAscii(imageAscii)
+	imageAscii := this.create(dto)
+	return this.commandRepository.InsertAscii(imageAscii)
 }
 
-func create(dto dto.AsciiRequest) ascii.ImageAscii {
+func (this Service) create(dto dto.AsciiRequest) ascii.ImageAscii {
 	path := tempsource.Base64ToSource(dto.Image, dto.Code)
 	temp, err := os.Open(path)
 	if err != nil {

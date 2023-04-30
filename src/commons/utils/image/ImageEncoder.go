@@ -1,13 +1,13 @@
 package image
 
 import (
-	"bytes"
-	"encoding/base64"
-	"go-ascii/src/commons/utils"
-	"image/gif"
-	"image/png"
 	"io"
 	"os"
+	"bytes"
+	"image/gif"
+	"image/png"
+	"encoding/base64"
+	"go-ascii/src/commons/utils"
 )
 
 func Encoder(file *os.File) (encode string) {

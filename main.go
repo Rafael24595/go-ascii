@@ -1,15 +1,16 @@
 package main
 
 import (
+	"os"
+	"syscall"
+	"net/http"
+	"os/signal"
+	"github.com/gin-gonic/gin"
 	"go-ascii/src/commons/temp-source"
 	"go-ascii/src/infrastructure/controller"
 	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/service"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"github.com/gin-gonic/gin"
+	
 )
 
 func main() {
@@ -25,9 +26,11 @@ func main() {
 func serve() {
 	router := gin.Default()
 
-	repositoryAscii := repository.NewRepositoryInmemory()
-	serviceAscii := service.NewService(repositoryAscii)
-	controller.NewController(router, serviceAscii)
+	queryRepository := repository.NewQueryRepositoryInmemory()
+	commandRepository := repository.NewCommandRepositoryInmemory(queryRepository)
+	serviceAscii := service.NewService(queryRepository, commandRepository)
+	controller.NewControllerRest(router, serviceAscii)
+	controller.NewControllerView(router, serviceAscii)
 
 	server := &http.Server{
 		Addr:    "localhost:8080",

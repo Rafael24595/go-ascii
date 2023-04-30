@@ -1,13 +1,13 @@
 package image
 
 import (
+	"io"
+	"os"
 	"bytes"
-	"go-ascii/src/commons/utils"
 	"image"
 	"image/gif"
 	"image/png"
-	"io"
-	"os"
+	"go-ascii/src/commons/utils"
 )
 
 func Decode(file *os.File) (decode []image.Image) {

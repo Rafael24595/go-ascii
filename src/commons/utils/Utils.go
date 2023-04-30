@@ -1,12 +1,12 @@
 package utils
 
 import (
-	"bytes"
-	"io"
-	"io/ioutil"
-	"net/http"
 	"os"
+	"io"
+	"bytes"
 	"strings"
+	"net/http"
+	"io/ioutil"
 )
 
 func ReaderExtension(reader io.Reader) string {
