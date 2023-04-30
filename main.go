@@ -7,9 +7,17 @@ import (
 	"go-ascii/src/commons/utils"
 	"go-ascii/src/commons/utils/image"
 	"go-ascii/src/domain/ascii/builder"
+	"go-ascii/src/infrastructure/controller"
+	"go-ascii/src/infrastructure/repository"
+	"go-ascii/src/service"
+	"net/http"
 	"os"
+	/*"os/signal"
+	"syscall"*/
 
 	"path/filepath"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -56,4 +64,24 @@ func main() {
 	fmt.Println(result.Type)
 
 	tempsource.CleanSessionSources()
+	/*serve()
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit*/
+}
+
+func serve() {
+	router := gin.Default()
+
+	repositoryAscii := repository.NewRepositoryInmemory()
+	serviceAscii := service.Service{Repository: repositoryAscii}
+	controller.NewController(router, serviceAscii)
+
+	server := &http.Server{
+		Addr:    "localhost:8080",
+		Handler: router,
+	}
+
+	go server.ListenAndServe()
 }
