@@ -12,35 +12,34 @@ import (
 
 type BuilderAscii struct {
 	Images collection.ImagesCollection
-	ImgScale scale.ImageScale
+	ImgeScale scale.ImageScale
 	GrayScale string
 }
 
-func NewBuilderAscii(imgs []image.Image, scaleHeight int, scaleWidth int, grayScale string) (ascii BuilderAscii) {
+func NewBuilderAscii(imgs []image.Image, scaleHeight int, scaleWidth int, grayScale string) BuilderAscii {
 	collection := collection.NewImagesCollection(imgs)
 	scale := scale.NewImageScale(collection, scaleHeight, scaleWidth)
-	ascii = BuilderAscii{Images:collection, ImgScale: scale, GrayScale:grayScale}
-	return
+	return BuilderAscii{Images:collection, ImgeScale: scale, GrayScale:grayScale}
 }
 
-func Build(this BuilderAscii) (imageAscii ascii.ImageAscii) {
+func (this BuilderAscii) Build() (imageAscii ascii.ImageAscii) {
 	imageAscii = ascii.NewImageAscii("", "", []string{})
 	for i, _ := range this.Images.Images {
-		frame := buildFrame(this, i)
+		frame := this.buildFrame(i)
 		frame = utils.CleanScapeChars(frame)
 		imageAscii.Frames = append(imageAscii.Frames, frame)
 	}
 	return
 }
 
-func buildFrame(this BuilderAscii, position int) (frame string) {
-	height := int(collection.GetImageHeight(this.Images))
-	width := int(collection.GetImageWidth(this.Images))
+func (this BuilderAscii) buildFrame(position int) (frame string) {
+	height := int(this.Images.GetImageHeight())
+	width := int(this.Images.GetImageWidth())
 	
-	scaleX := scale.GetScaleX(this.ImgScale)
-	scaleY := scale.GetScaleY(this.ImgScale)
+	scaleX := this.ImgeScale.GetScaleX()
+	scaleY := this.ImgeScale.GetScaleY()
 
-	grayscale := grayScale(this, position)
+	grayscale := this.grayScale(position)
 	for y := 0; y < height; y+=int(scaleY*2.5) {
 		for x := 0; x < width; x+= int(scaleX) {
 			c := grayscale.GrayAt(x, y).Y
@@ -49,21 +48,22 @@ func buildFrame(this BuilderAscii, position int) (frame string) {
 		}
 		frame += "\n"
 	}
+
 	return
 }
 
-func resizeImage(this BuilderAscii, position int) (resized *image.RGBA) {
-	height := int(collection.GetImageHeight(this.Images))
-	width := int(collection.GetImageWidth(this.Images))
+func (this BuilderAscii) resizeImage(position int) (resized *image.RGBA) {
+	height := int(this.Images.GetImageHeight())
+	width := int(this.Images.GetImageWidth())
 	resized = image.NewRGBA(image.Rect(0, 0, width, height))
 	draw.Draw(resized, resized.Bounds(), this.Images.Images[position], image.Point{0, 0}, draw.Src)
 	return
 }
 
-func grayScale(this BuilderAscii, position int) (grayscale *image.Gray) {
-	resized := resizeImage(this, position)
-	height := int(collection.GetImageHeight(this.Images))
-	width := int(collection.GetImageWidth(this.Images))
+func (this BuilderAscii) grayScale(position int) (grayscale *image.Gray) {
+	resized := this.resizeImage(position)
+	height := int(this.Images.GetImageHeight())
+	width := int(this.Images.GetImageWidth())
 
 	grayscale = image.NewGray(resized.Bounds())
 
@@ -73,5 +73,6 @@ func grayScale(this BuilderAscii, position int) (grayscale *image.Gray) {
 			grayscale.Set(x, y, c)
 		}
 	}
+
 	return
 }

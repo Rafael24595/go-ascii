@@ -8,18 +8,19 @@ import (
 	"go-ascii/src/commons/utils/image"
 	"go-ascii/src/domain/ascii/builder"
 	"os"
+
 	"path/filepath"
 )
 
 func main() {
 	/*** Base64 request ***/
 	f, err := os.Open("golang.gif")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
 
-    encoded := image.Encoder(f)
+	    encoded := image.Encoder(f)
 	/***                           ***/
 
 	path := tempsource.Base64ToSource(encoded)
@@ -27,20 +28,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	img := image.Decode(temp)
 	scaleHeight := 115
 	scaleWidth := 0
 	grayScale := constants.GrayScaleLevels["default"]
 
-	blder := builder.NewBuilderAscii(img, scaleHeight, scaleWidth, grayScale)
-	result := builder.Build(blder)
+	builderAscii := builder.NewBuilderAscii(img, scaleHeight, scaleWidth, grayScale)
+	result := builderAscii.Build()
 
 	temp, err = os.Open(path)
 	if err != nil {
 		panic(err)
 	}
-	
+
 	result.Name = filepath.Base(temp.Name())
 	result.Type = utils.FileExtension(temp)
 

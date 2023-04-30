@@ -6,17 +6,14 @@ type ImagesCollection struct {
 	Images []image.Image
 }
 
-func NewImagesCollection(imgs []image.Image) (collection ImagesCollection) {
-	collection = ImagesCollection{Images: imgs}
-	return
+func NewImagesCollection(imgs []image.Image) ImagesCollection {
+	return ImagesCollection{Images: imgs}
 }
 
-func GetImageHeight(this ImagesCollection) (width float64) {
-	width = float64(this.Images[0].Bounds().Dy())
-	return
+func (this ImagesCollection) GetImageHeight() float64 {
+	return float64(this.Images[0].Bounds().Dy())
 }
 
-func GetImageWidth(this ImagesCollection) (height float64) {
-	height = float64(this.Images[0].Bounds().Dx())
-	return
+func (this ImagesCollection) GetImageWidth() float64 {
+	return float64(this.Images[0].Bounds().Dx())
 }

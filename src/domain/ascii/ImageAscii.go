@@ -6,7 +6,6 @@ type ImageAscii struct {
 	Frames []string
 }
 
-func NewImageAscii(name string, typ string, frames []string) (imageAscii ImageAscii) {
-	imageAscii = ImageAscii{Name: name, Type: typ, Frames: frames}
-	return
+func NewImageAscii(name string, typ string, frames []string) ImageAscii {
+	return ImageAscii{Name: name, Type: typ, Frames: frames}
 }

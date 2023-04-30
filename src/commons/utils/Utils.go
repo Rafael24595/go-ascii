@@ -9,25 +9,22 @@ import (
 	"strings"
 )
 
-func ReaderExtension(reader io.Reader) (extension string) {
+func ReaderExtension(reader io.Reader) string {
 	data, err := ioutil.ReadAll(reader)
 	if err != nil {
 		panic(err)
 	}
 
-	extension = http.DetectContentType(data)
-	return
+	return http.DetectContentType(data)
 }
 
-func FileExtension(file *os.File) (extension string) {
+func FileExtension(file *os.File) string {
 	var buffer bytes.Buffer
     reader := io.TeeReader(file, &buffer)
-	extension = ReaderExtension(reader)
-	extension = strings.Split(extension, ";")[0]
-	return
+	extension := ReaderExtension(reader)
+	return strings.Split(extension, ";")[0]
 }
 
-func CleanScapeChars(str string) (asciiClean string) {
-	asciiClean = strings.Replace(str, "%", "%%", -1)
-	return
+func CleanScapeChars(str string) string {
+	return strings.Replace(str, "%", "%%", -1)
 }
