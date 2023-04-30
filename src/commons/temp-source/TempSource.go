@@ -3,17 +3,24 @@ package tempsource
 import (
 	"encoding/base64"
 	"os"
+	"strings"
 )
 
 var temps = []string{}
 
-func Base64ToSource(encode string) (path string) {
+func Base64ToSource(encode string, code string) (path string) {
 	dec, err := base64.StdEncoding.DecodeString(encode)
 	if err != nil {
 		panic(err)
 	}
 
-	file, err := os.CreateTemp(".temp", "Source-")
+	code = strings.TrimSpace(code)
+	name := "Source-"
+	if(code != ""){
+		name += code + "-"
+	}
+
+	file, err := os.CreateTemp(".temp", name)
 	if err != nil {
 		panic(err)
 	}
