@@ -33,23 +33,18 @@ func NewRequestLauncher(commandRepository repository.CommandRepository) RequestL
 }
 
 func (this RequestLauncher) CheckStatus(code string) string {
-	idx := slices.IndexFunc(*this.pending, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
-	if idx != -1 {
+	if slices.IndexFunc(*this.pending, func(e ascii.QueueEvent) bool { return e.GetCode() == code}) != -1 {
 		return request_state.PENDING
 	}
-	idx = slices.IndexFunc(*this.process, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
-	if idx != -1 {
+	if slices.IndexFunc(*this.process, func(e ascii.QueueEvent) bool { return e.GetCode() == code}) != -1 {
 		return request_state.PROCESS
 	}
-	idx = slices.IndexFunc(*this.failed, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
-	if idx != -1 {
+	if slices.IndexFunc(*this.failed, func(e ascii.QueueEvent) bool { return e.GetCode() == code}) != -1 {
 		return request_state.FAILED
 	}
-	idx = slices.IndexFunc(*this.success, func(c string) bool { return c == code})
-	if idx != -1 {
+	if slices.IndexFunc(*this.success, func(c string) bool { return c == code}) != -1 {
 		return request_state.SUCCES
 	}
-	
 	return request_state.NOT_FOUND
 }
 
@@ -67,7 +62,7 @@ func (this RequestLauncher) launchQueuque() {
 		for this.active {
 			pend := (*this.pending)[0]
 			go this.insertAscii(pend)
-			*this.pending = utils.RemoveIndex(*this.pending, 0)
+			*this.pending = (*this.pending)[1:]
 			*this.process = append(*this.process, pend)
 			if len(*this.pending) == 0 {
 				this.active = false
@@ -83,9 +78,11 @@ func (this RequestLauncher) insertAscii(event ascii.QueueEvent) {
 	}
 
 	img := image.Decode(temp)
+	//TODO: From request ->
 	scaleHeight := 115
 	scaleWidth := 0
 	grayScale := gray_scale.DEFAULT
+	// <-
 
 	builderAscii := builder.NewBuilderAscii(img, scaleHeight, scaleWidth, grayScale)
 	imageAscii := builderAscii.Build()
@@ -101,7 +98,10 @@ func (this RequestLauncher) insertAscii(event ascii.QueueEvent) {
 	temp.Close()
 
 	this.commandRepository.InsertAscii(imageAscii)
-	
+	this.markAsComplete(event)
+}
+
+func (this RequestLauncher) markAsComplete(event ascii.QueueEvent) {
 	idx := slices.IndexFunc(*this.process, func(e ascii.QueueEvent) bool { return e.GetCode() == event.GetCode()})
 	if idx != -1 {
 		*this.process = utils.RemoveIndex(*this.process, idx)

@@ -27,7 +27,6 @@ func (this BuilderAscii) Build() ascii.ImageAscii {
 	imageAscii := ascii.NewImageAscii("", "", request_state.SUCCES, []string{})
 	for i := range this.images.GetImages() {
 		frame := this.buildFrame(i)
-		//frame = utils.CleanScapeChars(frame)
 		imageAscii.AppendFrame(frame)
 	}
 	return imageAscii
