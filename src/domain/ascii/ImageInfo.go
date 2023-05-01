@@ -1,10 +1,18 @@
 package ascii
 
 type ImageInfo struct {
-	Code string
-	Type string
+	code string
+	extension string
 }
 
-func NewImageInfo(code string, typ string) ImageInfo {
-	return ImageInfo{Code: code, Type: typ}
+func NewImageInfo(code string, extension string) ImageInfo {
+	return ImageInfo{code: code, extension: extension}
+}
+
+func (this ImageInfo) GetCode() string {
+	return this.code
+}
+
+func (this ImageInfo) GetExtension() string {
+	return this.extension
 }

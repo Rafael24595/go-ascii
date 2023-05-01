@@ -5,23 +5,23 @@ import (
 )
 
 type ImageScale struct {
-	Images collection.ImagesCollection
-	ScaleHeight float64
-	ScaleWidth  float64
+	images collection.ImagesCollection
+	scaleHeight float64
+	scaleWidth  float64
 }
 
-func NewImageScale(imgs collection.ImagesCollection, scaleHeight int, scaleWidth int) ImageScale {
-	return ImageScale{Images: imgs, ScaleHeight: float64(scaleHeight), ScaleWidth: float64(scaleWidth)}
+func NewImageScale(images collection.ImagesCollection, scaleHeight int, scaleWidth int) ImageScale {
+	return ImageScale{images: images, scaleHeight: float64(scaleHeight), scaleWidth: float64(scaleWidth)}
 }
 
 func (this ImageScale) GetScaleX() (scaleX float64) {
 	scaleX = 0
-	if this.ScaleHeight != 0 {
-		height := this.Images.GetImageHeight()
-		scaleX = height / this.ScaleHeight
-	} else if this.ScaleWidth != 0 {
-		height := this.Images.GetImageHeight()
-		width := this.Images.GetImageWidth()
+	if this.scaleHeight != 0 {
+		height := this.images.GetImageHeight()
+		scaleX = height / this.scaleHeight
+	} else if this.scaleWidth != 0 {
+		height := this.images.GetImageHeight()
+		width := this.images.GetImageWidth()
 		scaleY := this.GetScaleY()
 		scaleX = (scaleY / width) *  height
 	}
@@ -30,12 +30,12 @@ func (this ImageScale) GetScaleX() (scaleX float64) {
 
 func (this ImageScale) GetScaleY() (scaleY float64) {
 	scaleY = 0
-	if this.ScaleWidth != 0 {
-		width := this.Images.GetImageWidth()
-		scaleY = width / this.ScaleWidth
-	} else if this.ScaleHeight != 0 {
-		width := this.Images.GetImageWidth()
-		height := this.Images.GetImageHeight()
+	if this.scaleWidth != 0 {
+		width := this.images.GetImageWidth()
+		scaleY = width / this.scaleWidth
+	} else if this.scaleHeight != 0 {
+		width := this.images.GetImageWidth()
+		height := this.images.GetImageHeight()
 		scaleX := this.GetScaleX()
 		scaleY = (scaleX / height) *  width
 	}

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"go-ascii/src/domain/ascii"
 	"go-ascii/src/infrastructure/dto"
 	"go-ascii/src/infrastructure/repository"
 )
@@ -16,20 +15,27 @@ func NewService(queryRepository repository.QueryRepository, commandRepository re
 	return Service{queryRepository: queryRepository, requestLauncher: requestLauncher}
 }
 
-func (this Service) FindAllAscii() []ascii.ImageInfo {
-	return this.queryRepository.FindAllAscii()
-}
-
-func (this Service) FindAscii(code string) ascii.ImageAscii {
-	image := this.queryRepository.FindAscii(code)
-	if image.Status == "" {
-		status := this.requestLauncher.CheckStatus(code)
-		image.Status = status
-		image.Name = code
+func (this Service) FindAllAscii() (response []dto.InfoResponse) {
+	info := this.queryRepository.FindAllAscii()
+	response = []dto.InfoResponse{}
+	for _, data := range info {
+		response = append(response, dto.InfoResponse{Code: data.GetCode(), Extension: data.GetExtension()})
 	}
-	return image
+	return
 }
 
-func (this Service) InsertAscii(dto dto.AsciiRequest) string {
+func (this Service) FindAscii(code string) dto.AsciiResponse {
+	image := this.queryRepository.FindAscii(code)
+	response := dto.AsciiResponse{Name: image.GetName(), Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
+	if response.Status == "" {
+		status := this.requestLauncher.CheckStatus(code)
+		response.Status = status
+		response.Name = code
+		response.Extension = "Undefined"
+	}
+	return response
+}
+
+func (this Service) InsertAscii(dto dto.ImageRequest) string {
 	return this.requestLauncher.PushAsciiRequest(dto)
 }

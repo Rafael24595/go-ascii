@@ -4,7 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"golang.org/x/exp/slices"
-	"go-ascii/src/commons/constants"
+	"go-ascii/src/commons/constants/gray-scale"
+	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/temp-source"
 	"go-ascii/src/commons/utils"
 	"go-ascii/src/commons/utils/image"
@@ -34,25 +35,25 @@ func NewRequestLauncher(commandRepository repository.CommandRepository) RequestL
 func (this RequestLauncher) CheckStatus(code string) string {
 	idx := slices.IndexFunc(*this.pending, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
 	if idx != -1 {
-		return constants.PENDING
+		return request_state.PENDING
 	}
 	idx = slices.IndexFunc(*this.process, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
 	if idx != -1 {
-		return constants.PROCESS
+		return request_state.PROCESS
 	}
 	idx = slices.IndexFunc(*this.failed, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
 	if idx != -1 {
-		return constants.FAILED
+		return request_state.FAILED
 	}
 	idx = slices.IndexFunc(*this.success, func(c string) bool { return c == code})
 	if idx != -1 {
-		return constants.SUCCES
+		return request_state.SUCCES
 	}
 	
-	return constants.NOT_FOUND
+	return request_state.NOT_FOUND
 }
 
-func (this RequestLauncher) PushAsciiRequest(dto dto.AsciiRequest) string {
+func (this RequestLauncher) PushAsciiRequest(dto dto.ImageRequest) string {
 	path := tempsource.Base64ToSource(dto.Image, dto.Code)
 	event := ascii.NewQueueEvent(dto, path)
 	*this.pending = append(*this.pending, event)
@@ -84,7 +85,7 @@ func (this RequestLauncher) insertAscii(event ascii.QueueEvent) {
 	img := image.Decode(temp)
 	scaleHeight := 115
 	scaleWidth := 0
-	grayScale := constants.GrayScaleLevels["default"]
+	grayScale := gray_scale.DEFAULT
 
 	builderAscii := builder.NewBuilderAscii(img, scaleHeight, scaleWidth, grayScale)
 	imageAscii := builderAscii.Build()
@@ -94,8 +95,8 @@ func (this RequestLauncher) insertAscii(event ascii.QueueEvent) {
 		panic(err)
 	}
 
-	imageAscii.Name = event.GetCode()
-	imageAscii.Type = utils.FileExtension(temp)
+	imageAscii.SetName(event.GetCode())
+	imageAscii.SetExtension(utils.FileExtension(temp)) 
 
 	temp.Close()
 

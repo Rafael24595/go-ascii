@@ -2,14 +2,14 @@ package ascii_view
 
 import (
 	"strings"
-	"go-ascii/src/domain/ascii"
+	"go-ascii/src/infrastructure/dto"
 )
 
 type asciiStaticViewBuilder struct {
-	image ascii.ImageAscii
+	image dto.AsciiResponse
 }
 
-func newAsciiStaticViewBuilder(image ascii.ImageAscii) asciiStaticViewBuilder {
+func newAsciiStaticViewBuilder(image dto.AsciiResponse) asciiStaticViewBuilder {
 	return asciiStaticViewBuilder{image: image}
 }
 
@@ -24,7 +24,7 @@ func (this asciiStaticViewBuilder) Build() string {
 func (this asciiStaticViewBuilder) buildStaticBody() string {
 	var body strings.Builder
 
-	body.WriteString("<pre id=\"" + this.image.Name + "\" type=\"" + this.image.Type + "\">")
+	body.WriteString("<pre id=\"" + this.image.Name + "\" type=\"" + this.image.Extension + "\">")
 	body.WriteString(this.image.Frames[0])
 	body.WriteString("</pre>")
 

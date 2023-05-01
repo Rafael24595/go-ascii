@@ -4,14 +4,14 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"go-ascii/src/domain/ascii"
+	"go-ascii/src/infrastructure/dto"
 )
 
 type asciiAnimationViewBuilder struct {
-	image ascii.ImageAscii
+	image dto.AsciiResponse
 }
 
-func newAsciiAnimationViewBuilder(image ascii.ImageAscii) asciiAnimationViewBuilder {
+func newAsciiAnimationViewBuilder(image dto.AsciiResponse) asciiAnimationViewBuilder {
 	return asciiAnimationViewBuilder{image: image}
 }
 
@@ -28,7 +28,7 @@ func (this asciiAnimationViewBuilder) Build() string {
 func (this asciiAnimationViewBuilder) buildAnimationBody() string {
 	var body strings.Builder
 
-	body.WriteString("<pre id=\"" + this.image.Name + "\" type=\"" + this.image.Type + "\">")
+	body.WriteString("<pre id=\"" + this.image.Name + "\" type=\"" + this.image.Extension + "\">")
 	for i, frame := range this.image.Frames {
 		body.WriteString("<pre id=\"" + this.image.Name + "-" + strconv.Itoa(i) + "\" style=\"display: none;\">")
 		body.WriteString(frame)

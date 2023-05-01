@@ -11,7 +11,7 @@ type QueueEvent struct {
 	image string
 }
 
-func NewQueueEvent(dto dto.AsciiRequest, path string) QueueEvent {
+func NewQueueEvent(dto dto.ImageRequest, path string) QueueEvent {
 	return QueueEvent{path: path, code: filepath.Base(path), image: dto.Image}
 }
 

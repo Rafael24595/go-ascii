@@ -33,7 +33,7 @@ func (this ControllerRest) findAscii(c *gin.Context) {
 }
 
 func (this ControllerRest) insertAscii(c *gin.Context) {
-	asciiRequest := dto.AsciiRequest{}
+	asciiRequest := dto.ImageRequest{}
 	err := c.BindJSON(&asciiRequest)
 	if err != nil {
 		c.JSON(500, err)

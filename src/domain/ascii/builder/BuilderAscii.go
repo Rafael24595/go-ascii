@@ -4,47 +4,48 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"go-ascii/src/commons/constants"
+	"go-ascii/src/commons/constants/gray-scale"
+	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/domain/ascii"
 	"go-ascii/src/domain/ascii/builder/collection"
 	"go-ascii/src/domain/ascii/builder/scale"
 )
 
 type BuilderAscii struct {
-	Images collection.ImagesCollection
-	ImgeScale scale.ImageScale
-	GrayScale string
+	images collection.ImagesCollection
+	imgeScale scale.ImageScale
+	grayScale gray_scale.GrayScale
 }
 
-func NewBuilderAscii(imgs []image.Image, scaleHeight int, scaleWidth int, grayScale string) BuilderAscii {
+func NewBuilderAscii(imgs []image.Image, scaleHeight int, scaleWidth int, grayScale gray_scale.GrayScale) BuilderAscii {
 	collection := collection.NewImagesCollection(imgs)
 	scale := scale.NewImageScale(collection, scaleHeight, scaleWidth)
-	return BuilderAscii{Images:collection, ImgeScale: scale, GrayScale:grayScale}
+	return BuilderAscii{images:collection, imgeScale: scale, grayScale: grayScale}
 }
 
-func (this BuilderAscii) Build() (imageAscii ascii.ImageAscii) {
-	imageAscii = ascii.NewImageAscii("", "", constants.SUCCES, []string{})
-	for i := range this.Images.Images {
+func (this BuilderAscii) Build() ascii.ImageAscii {
+	imageAscii := ascii.NewImageAscii("", "", request_state.SUCCES, []string{})
+	for i := range this.images.GetImages() {
 		frame := this.buildFrame(i)
 		//frame = utils.CleanScapeChars(frame)
-		imageAscii.Frames = append(imageAscii.Frames, frame)
+		imageAscii.AppendFrame(frame)
 	}
-	return
+	return imageAscii
 }
 
 func (this BuilderAscii) buildFrame(position int) (frame string) {
-	height := int(this.Images.GetImageHeight())
-	width := int(this.Images.GetImageWidth())
+	height := int(this.images.GetImageHeight())
+	width := int(this.images.GetImageWidth())
 	
-	scaleX := this.ImgeScale.GetScaleX()
-	scaleY := this.ImgeScale.GetScaleY()
+	scaleX := this.imgeScale.GetScaleX()
+	scaleY := this.imgeScale.GetScaleY()
 
-	grayscale := this.grayScale(position)
+	grayscale := this.desaturateImage(position)
 	for y := 0; y < height; y+=int(scaleY*2.5) {
 		for x := 0; x < width; x+= int(scaleX) {
 			c := grayscale.GrayAt(x, y).Y
-			i := int(float64(c) / 255.0 * float64(len(this.GrayScale)-1))
-			frame += string(this.GrayScale[i])
+			i := int(float64(c) / 255.0 * float64(len(this.grayScale)-1))
+			frame += string(this.grayScale[i])
 		}
 		frame += "\n"
 	}
@@ -53,17 +54,17 @@ func (this BuilderAscii) buildFrame(position int) (frame string) {
 }
 
 func (this BuilderAscii) resizeImage(position int) (resized *image.RGBA) {
-	height := int(this.Images.GetImageHeight())
-	width := int(this.Images.GetImageWidth())
+	height := int(this.images.GetImageHeight())
+	width := int(this.images.GetImageWidth())
 	resized = image.NewRGBA(image.Rect(0, 0, width, height))
-	draw.Draw(resized, resized.Bounds(), this.Images.Images[position], image.Point{0, 0}, draw.Src)
+	draw.Draw(resized, resized.Bounds(), this.images.GetImage(position), image.Point{0, 0}, draw.Src)
 	return
 }
 
-func (this BuilderAscii) grayScale(position int) (grayscale *image.Gray) {
+func (this BuilderAscii) desaturateImage(position int) (grayscale *image.Gray) {
 	resized := this.resizeImage(position)
-	height := int(this.Images.GetImageHeight())
-	width := int(this.Images.GetImageWidth())
+	height := int(this.images.GetImageHeight())
+	width := int(this.images.GetImageWidth())
 
 	grayscale = image.NewGray(resized.Bounds())
 

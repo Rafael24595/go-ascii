@@ -12,7 +12,7 @@ func NewCommandRepositoryInmemory(queryRepository QueryRepository) CommandReposi
 
 func (this CommandRepositoryInmemory) InsertAscii(image ascii.ImageAscii) string {
 	this.InsertQuery(image)
-	return image.Name
+	return image.GetName()
 }
 
 func (this CommandRepositoryInmemory) InsertQuery(image ascii.ImageAscii) {

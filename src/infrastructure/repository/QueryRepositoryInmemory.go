@@ -16,7 +16,7 @@ func (this QueryRepositoryInmemory) FindAllAscii() (info []ascii.ImageInfo) {
 	info = make([]ascii.ImageInfo, 0, len(this.storage))
 	for key := range this.storage {
 		image := this.storage[key]
-		data := ascii.NewImageInfo(image.Name, image.Type)
+		data := ascii.NewImageInfo(image.GetName(), image.GetExtension())
 		info = append(info, data)
 	}
 	return
@@ -27,5 +27,5 @@ func (this QueryRepositoryInmemory) FindAscii(code string) ascii.ImageAscii {
 }
 
 func (this QueryRepositoryInmemory) InsertCommand(image ascii.ImageAscii) {
-	this.storage[image.Name] = image
+	this.storage[image.GetName()] = image
 }

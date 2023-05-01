@@ -1,17 +1,17 @@
 package ascii_view
 
 import (
-	"go-ascii/src/commons/constants"
-	"go-ascii/src/domain/ascii"
-	"go-ascii/src/view/sources"
 	"strings"
+	"go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/infrastructure/dto"
+	"go-ascii/src/view/sources"
 )
 
 type AsciiViewBuilder struct {
-	image ascii.ImageAscii
+	image dto.AsciiResponse
 }
 
-func NewAsciiViewBuilder(image ascii.ImageAscii) AsciiViewBuilder {
+func NewAsciiViewBuilder(image dto.AsciiResponse) AsciiViewBuilder {
 	return AsciiViewBuilder{image: image}
 }
 
@@ -34,7 +34,7 @@ func (this AsciiViewBuilder) Build() (body string) {
 		html.WriteString(animation.Build())
 	}
 
-	if this.image.Status == constants.PROCESS || this.image.Status == constants.PENDING {
+	if this.image.Status == request_state.PROCESS || this.image.Status == request_state.PENDING {
 		html.WriteString(sources.BuildReloadScript(3000))
 		html.WriteString("<p><b>*** This page will be reloaded in a few seconds, please wait. ***</b></p>")
 	} 
@@ -53,7 +53,7 @@ func (this AsciiViewBuilder) buildCode() string {
 func (this AsciiViewBuilder) buildType() string {
 	var body strings.Builder
 	body.WriteString("<p>")
-	body.WriteString("Type: " + this.image.Type)
+	body.WriteString("Type: " + this.image.Extension)
 	body.WriteString("</p>")
 	return body.String()
 }

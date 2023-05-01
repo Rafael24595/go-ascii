@@ -1,4 +1,4 @@
-package constants
+package request_state
 
 const ( 
 	PENDING = "PENDING" 

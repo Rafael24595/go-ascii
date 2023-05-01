@@ -3,17 +3,25 @@ package collection
 import "image"
 
 type ImagesCollection struct {
-	Images []image.Image
+	images []image.Image
 }
 
 func NewImagesCollection(imgs []image.Image) ImagesCollection {
-	return ImagesCollection{Images: imgs}
+	return ImagesCollection{images: imgs}
 }
 
 func (this ImagesCollection) GetImageHeight() float64 {
-	return float64(this.Images[0].Bounds().Dy())
+	return float64(this.images[0].Bounds().Dy())
 }
 
 func (this ImagesCollection) GetImageWidth() float64 {
-	return float64(this.Images[0].Bounds().Dx())
+	return float64(this.images[0].Bounds().Dx())
+}
+
+func (this ImagesCollection) GetImages() []image.Image {
+	return this.images
+}
+
+func (this ImagesCollection) GetImage(index int) image.Image {
+	return this.images[index]
 }
