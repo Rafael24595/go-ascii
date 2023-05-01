@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-ascii/src/commons/temp-source"
 	"go-ascii/src/infrastructure/controller"
+	"go-ascii/src/infrastructure/controller/middleware"
 	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/service"
-	
 )
 
 func main() {
@@ -25,6 +25,7 @@ func main() {
 
 func serve() {
 	router := gin.Default()
+	router.Use(middleware.Cors())
 
 	queryRepository := repository.NewQueryRepositoryInmemory()
 	commandRepository := repository.NewCommandRepositoryInmemory(queryRepository)

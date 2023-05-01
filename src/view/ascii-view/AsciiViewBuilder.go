@@ -17,25 +17,25 @@ func (this AsciiViewBuilder) Build() (body string) {
 
 	var html strings.Builder
 
-	html.WriteString(this.buildBack())
+	html.WriteString(BuildBack())
 
 	html.WriteString(this.buildCode())
 	html.WriteString(this.buildType())
 
-	if(len(this.image.Frames) == 1){
+	if len(this.image.Frames) == 1 {
 		static := newAsciiStaticViewBuilder(this.image)
 		html.WriteString(static.Build())
-	} else if(len(this.image.Frames) > 1) {
+	} else if len(this.image.Frames) > 1 {
 		animation := newAsciiAnimationViewBuilder(this.image)
 		html.WriteString(animation.Build())
 	}
-	
+
 	return html.String()
 }
 
-func (this AsciiViewBuilder) buildBack() string {
+func BuildBack() string {
 	var html strings.Builder
-	uri := "/api/view/ascii" 
+	uri := "/api/view/ascii"
 	html.WriteString("<p>")
 	html.WriteString("<<< Menu: ")
 	html.WriteString("<a href=\"" + uri + "\">" + uri + "</a>")
