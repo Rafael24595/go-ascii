@@ -38,7 +38,7 @@ func (this RequestLauncher) CheckStatus(code string) string {
 	}
 	idx = slices.IndexFunc(*this.process, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
 	if idx != -1 {
-		return constants.PENDING
+		return constants.PROCESS
 	}
 	idx = slices.IndexFunc(*this.failed, func(e ascii.QueueEvent) bool { return e.GetCode() == code})
 	if idx != -1 {
