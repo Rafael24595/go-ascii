@@ -2,21 +2,23 @@ package menu_view
 
 import (
 	"strings"
+	"go-ascii/src/domain/ascii"
+	"go-ascii/src/view/sources"
 )
 
 type MenuViewBuilder struct {
-	host string
-	sources []string
+	sources []ascii.ImageInfo
 }
 
-func NewMenuViewBuilder(sources []string, host string) MenuViewBuilder {
-	return MenuViewBuilder{sources: sources, host: host}
+func NewMenuViewBuilder(sources []ascii.ImageInfo) MenuViewBuilder {
+	return MenuViewBuilder{sources: sources}
 }
 
 func (this MenuViewBuilder) Build() (body string) {
 	var html strings.Builder
 
 	html.WriteString(this.buildForm())
+	html.WriteString(sources.BuildLine())
 
 	if(len(this.sources) == 0){
 		html.WriteString("<p>There are no data sources to show.</p>")
@@ -24,9 +26,9 @@ func (this MenuViewBuilder) Build() (body string) {
 		html.WriteString("<ul>")
 
 		for _, source := range this.sources {
-			uri := "/api/view/ascii/" + source
+			uri := "/api/view/ascii/" + source.Code
 			html.WriteString("<li>")
-			html.WriteString("<b>" + source + "</b>: ")
+			html.WriteString("<b>" + source.Code + " - [" + source.Type + "]</b> >>> ")
 			html.WriteString("<a href=\"" + uri + "\">" + uri + "</a>")
 			html.WriteString("</li>")
 		}

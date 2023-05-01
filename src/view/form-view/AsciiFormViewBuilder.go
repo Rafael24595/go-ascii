@@ -1,9 +1,9 @@
 package form_view
 
 import (
-	ascii_view "go-ascii/src/view/ascii-view"
 	"os"
 	"strings"
+	"go-ascii/src/view/sources"
 )
 
 type AsciiFormViewBuilder struct {
@@ -15,7 +15,8 @@ func NewAsciiAsciiFormViewBuilder() AsciiFormViewBuilder {
 
 func (this AsciiFormViewBuilder) Build() string {
 	var html strings.Builder
-	html.WriteString(ascii_view.BuildBack())
+	html.WriteString(sources.BuildBack())
+	html.WriteString(sources.BuildLine())
 	html.WriteString(this.buildFormScript())
 	return html.String()
 }

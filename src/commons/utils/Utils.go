@@ -28,3 +28,7 @@ func FileExtension(file *os.File) string {
 func CleanScapeChars(str string) string {
 	return strings.Replace(str, "%", "%%", -1)
 }
+
+func RemoveIndex[T interface{}](s []T, index int) []T{
+	return append(s[:index], s[index+1:]...)
+}

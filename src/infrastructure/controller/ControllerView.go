@@ -24,7 +24,7 @@ func NewControllerView(router *gin.Engine, service service.Service) (controller 
 
 func (this ControllerView) findAllAscii(c *gin.Context) {
 	images := this.Service.FindAllAscii()
-	builder := menu_view.NewMenuViewBuilder(images, c.Request.Host)
+	builder := menu_view.NewMenuViewBuilder(images)
 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(builder.Build()))
 }
 

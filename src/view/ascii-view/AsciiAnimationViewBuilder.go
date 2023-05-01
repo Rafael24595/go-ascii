@@ -48,6 +48,5 @@ func (this asciiAnimationViewBuilder) buildAnimationScript() string {
 	script := string(scriptByte)
 	script = strings.Replace(script, "$GIFS", "\"" + this.image.Name + "\"", -1)
 
-
 	return script
 }

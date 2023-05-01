@@ -1,7 +1,9 @@
 package ascii_view
 
 import (
+	"go-ascii/src/commons/constants"
 	"go-ascii/src/domain/ascii"
+	"go-ascii/src/view/sources"
 	"strings"
 )
 
@@ -14,13 +16,15 @@ func NewAsciiViewBuilder(image ascii.ImageAscii) AsciiViewBuilder {
 }
 
 func (this AsciiViewBuilder) Build() (body string) {
-
 	var html strings.Builder
 
-	html.WriteString(BuildBack())
+	html.WriteString(sources.BuildBack())
+
+	html.WriteString(sources.BuildLine())
 
 	html.WriteString(this.buildCode())
 	html.WriteString(this.buildType())
+	html.WriteString(this.buildStatus())
 
 	if len(this.image.Frames) == 1 {
 		static := newAsciiStaticViewBuilder(this.image)
@@ -30,16 +34,11 @@ func (this AsciiViewBuilder) Build() (body string) {
 		html.WriteString(animation.Build())
 	}
 
-	return html.String()
-}
+	if this.image.Status == constants.PROCESS || this.image.Status == constants.PENDING {
+		html.WriteString(sources.BuildReloadScript(3000))
+		html.WriteString("<p><b>*** This page will be reloaded in a few seconds, please wait. ***</b></p>")
+	} 
 
-func BuildBack() string {
-	var html strings.Builder
-	uri := "/api/view/ascii"
-	html.WriteString("<p>")
-	html.WriteString("<<< Menu: ")
-	html.WriteString("<a href=\"" + uri + "\">" + uri + "</a>")
-	html.WriteString("</p>")
 	return html.String()
 }
 
@@ -55,6 +54,14 @@ func (this AsciiViewBuilder) buildType() string {
 	var body strings.Builder
 	body.WriteString("<p>")
 	body.WriteString("Type: " + this.image.Type)
+	body.WriteString("</p>")
+	return body.String()
+}
+
+func (this AsciiViewBuilder) buildStatus() string {
+	var body strings.Builder
+	body.WriteString("<p>")
+	body.WriteString("Status: " + this.image.Status)
 	body.WriteString("</p>")
 	return body.String()
 }
