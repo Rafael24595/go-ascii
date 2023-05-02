@@ -8,7 +8,7 @@
 <script type="text/javascript">
     function updateDelay(event) {
         const input = document.getElementById("delay");
-        window.location.href = window.location.href + "?delay=" + input.value;
+        window.location.href = window.location.origin + window.location.pathname + "?delay=" + input.value;
     }
     function updateDelayInput() {
         const input = document.getElementById("delay").value = delay;
