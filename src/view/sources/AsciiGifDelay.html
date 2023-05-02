@@ -1,0 +1,19 @@
+<div>
+    <p>Params: </p>
+    <label for="delay">Delay:</label><br>
+    <input type="number" id="delay" name="delay"><br><br>
+    <input type="button" onclick="updateDelay(event)" value="submit">
+</div>
+
+<script type="text/javascript">
+    function updateDelay(event) {
+        const input = document.getElementById("delay");
+        window.location.href = window.location.href + "?delay=" + input.value;
+    }
+    function updateDelayInput() {
+        const input = document.getElementById("delay").value = delay;
+    }
+    window.addEventListener("load", (event) => {
+        updateDelayInput()
+    });
+</script>

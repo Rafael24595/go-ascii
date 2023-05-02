@@ -64,9 +64,6 @@
             }
             let code = await res.text()
             code = code.replaceAll('"', '')
-            
-            console.log(view)
-            console.log(code)
 
             window.location.href = view + "/" + code;
         } catch (error) {

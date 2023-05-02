@@ -28,8 +28,9 @@ func (this Service) FindAscii(code string) dto.AsciiResponse {
 	image := this.queryRepository.FindAscii(code)
 	response := dto.AsciiResponse{Name: image.GetName(), Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
 	if response.Status == "" {
-		status := this.requestLauncher.CheckStatus(code)
+		status, message := this.requestLauncher.CheckStatus(code)
 		response.Status = status
+		response.Message = message
 		response.Name = code
 		response.Extension = "Undefined"
 	}

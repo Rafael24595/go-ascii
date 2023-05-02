@@ -9,10 +9,11 @@ import (
 
 type AsciiViewBuilder struct {
 	image dto.AsciiResponse
+	args map[string]string
 }
 
-func NewAsciiViewBuilder(image dto.AsciiResponse) AsciiViewBuilder {
-	return AsciiViewBuilder{image: image}
+func NewAsciiViewBuilder(image dto.AsciiResponse, args map[string]string) AsciiViewBuilder {
+	return AsciiViewBuilder{image: image, args: args}
 }
 
 func (this AsciiViewBuilder) Build() (body string) {
@@ -25,12 +26,13 @@ func (this AsciiViewBuilder) Build() (body string) {
 	html.WriteString(this.buildCode())
 	html.WriteString(this.buildType())
 	html.WriteString(this.buildStatus())
+	html.WriteString(this.buildMessage())
 
 	if len(this.image.Frames) == 1 {
-		static := newAsciiStaticViewBuilder(this.image)
+		static := newAsciiStaticViewBuilder(this.image, this.args)
 		html.WriteString(static.Build())
 	} else if len(this.image.Frames) > 1 {
-		animation := newAsciiAnimationViewBuilder(this.image)
+		animation := newAsciiAnimationViewBuilder(this.image, this.args)
 		html.WriteString(animation.Build())
 	}
 
@@ -63,5 +65,15 @@ func (this AsciiViewBuilder) buildStatus() string {
 	body.WriteString("<p>")
 	body.WriteString("Status: " + this.image.Status)
 	body.WriteString("</p>")
+	return body.String()
+}
+
+func (this AsciiViewBuilder) buildMessage() string {
+	var body strings.Builder
+	if(this.image.Message != ""){
+		body.WriteString("<p>")
+		body.WriteString("Message: " + this.image.Message)
+		body.WriteString("</p>")
+	}
 	return body.String()
 }

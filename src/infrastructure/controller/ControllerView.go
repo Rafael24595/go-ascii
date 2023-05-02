@@ -31,8 +31,14 @@ func (this ControllerView) findAllAscii(c *gin.Context) {
 func (this ControllerView) findAscii(c *gin.Context) {
 	code := c.Param("code")
 	image := this.Service.FindAscii(code)
-	builder := ascii_view.NewAsciiViewBuilder(image)
+	builder := ascii_view.NewAsciiViewBuilder(image, this.findAsciiArgs(c))
 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(builder.Build()))
+}
+
+func (this ControllerView) findAsciiArgs(c *gin.Context) (args map[string]string) {
+	args = map[string]string{}
+	args["delay"] = c.Query("delay")
+	return 
 }
 
 func (this ControllerView) insertAscii(c *gin.Context) {

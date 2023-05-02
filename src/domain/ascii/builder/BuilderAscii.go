@@ -1,30 +1,43 @@
 package builder
 
 import (
-	"image"
-	"image/color"
-	"image/draw"
 	"go-ascii/src/commons/constants/gray-scale"
 	"go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/commons/utils"
+	"go-ascii/src/commons/utils/encoder-decoder"
 	"go-ascii/src/domain/ascii"
 	"go-ascii/src/domain/ascii/builder/collection"
 	"go-ascii/src/domain/ascii/builder/scale"
+	"image"
+	"image/color"
+	"image/draw"
 )
 
 type BuilderAscii struct {
+	event ascii.QueueEvent
 	images collection.ImagesCollection
 	imgeScale scale.ImageScale
 	grayScale gray_scale.GrayScale
 }
 
-func NewBuilderAscii(imgs []image.Image, scaleHeight int, scaleWidth int, grayScale gray_scale.GrayScale) BuilderAscii {
-	collection := collection.NewImagesCollection(imgs)
+func NewBuilderAscii(event ascii.QueueEvent) (builder BuilderAscii, err error) {
+	//TODO: From request ->
+	scaleHeight := 115
+	scaleWidth := 0
+	grayScale := gray_scale.DEFAULT
+	// <-
+
+	images, err := encoder_decoder.DecodeByPath(event.GetPath())
+	collection := collection.NewImagesCollection(images)
 	scale := scale.NewImageScale(collection, scaleHeight, scaleWidth)
-	return BuilderAscii{images:collection, imgeScale: scale, grayScale: grayScale}
+	builder = BuilderAscii{event: event, images:collection, imgeScale: scale, grayScale: grayScale}
+	return 
 }
 
 func (this BuilderAscii) Build() ascii.ImageAscii {
-	imageAscii := ascii.NewImageAscii("", "", request_state.SUCCES, []string{})
+	code := this.event.GetCode()
+	extension := utils.FileExtensionByPath(this.event.GetPath())
+	imageAscii := ascii.NewImageAscii(code, extension, request_state.SUCCES, []string{})
 	for i := range this.images.GetImages() {
 		frame := this.buildFrame(i)
 		imageAscii.AppendFrame(frame)

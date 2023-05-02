@@ -1,4 +1,4 @@
-package image
+package encoder_decoder
 
 import (
 	"io"

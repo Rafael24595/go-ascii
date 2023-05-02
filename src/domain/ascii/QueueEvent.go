@@ -9,10 +9,11 @@ type QueueEvent struct {
 	path  string
 	code  string
 	image string
+	message string
 }
 
 func NewQueueEvent(dto dto.ImageRequest, path string) QueueEvent {
-	return QueueEvent{path: path, code: filepath.Base(path), image: dto.Image}
+	return QueueEvent{path: path, code: filepath.Base(path), image: dto.Image, message: ""}
 }
 
 func (this QueueEvent) GetPath() string {
@@ -25,4 +26,12 @@ func (this QueueEvent) GetCode() string {
 
 func (this QueueEvent) GetImage() string {
 	return this.image
+}
+
+func (this QueueEvent) GetMessage() string {
+	return this.message
+}
+
+func (this *QueueEvent) SetMessage(message string) {
+	this.message = message
 }

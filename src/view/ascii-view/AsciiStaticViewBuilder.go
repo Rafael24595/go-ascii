@@ -7,10 +7,11 @@ import (
 
 type asciiStaticViewBuilder struct {
 	image dto.AsciiResponse
+	args map[string]string
 }
 
-func newAsciiStaticViewBuilder(image dto.AsciiResponse) asciiStaticViewBuilder {
-	return asciiStaticViewBuilder{image: image}
+func newAsciiStaticViewBuilder(image dto.AsciiResponse, args map[string]string) asciiStaticViewBuilder {
+	return asciiStaticViewBuilder{image: image, args: args}
 }
 
 func (this asciiStaticViewBuilder) Build() string {

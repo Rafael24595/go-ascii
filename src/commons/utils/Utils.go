@@ -18,11 +18,21 @@ func ReaderExtension(reader io.Reader) string {
 	return http.DetectContentType(data)
 }
 
-func FileExtension(file *os.File) string {
+func FileExtensionByFile(file *os.File) string {
 	var buffer bytes.Buffer
     reader := io.TeeReader(file, &buffer)
 	extension := ReaderExtension(reader)
 	return strings.Split(extension, ";")[0]
+}
+
+func FileExtensionByPath(path string) (extesion string) {
+	temp, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	extesion = FileExtensionByFile(temp)
+	temp.Close()
+	return
 }
 
 func CleanScapeChars(str string) string {
