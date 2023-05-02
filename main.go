@@ -33,6 +33,4 @@ func serve() {
 	controller.NewControllerView(router, serviceAscii)
 
 	go router.Run("0.0.0.0:8080")
-
-	// TEST COMMENT
 }
