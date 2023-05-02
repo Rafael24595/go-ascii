@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"syscall"
-	"net/http"
 	"os/signal"
 	"github.com/gin-gonic/gin"
 	"go-ascii/src/commons/temp-source"
@@ -33,10 +32,5 @@ func serve() {
 	controller.NewControllerRest(router, serviceAscii)
 	controller.NewControllerView(router, serviceAscii)
 
-	server := &http.Server{
-		Addr:    "localhost:8080",
-		Handler: router,
-	}
-
-	go server.ListenAndServe()
+	go router.Run("0.0.0.0:8080")
 }
