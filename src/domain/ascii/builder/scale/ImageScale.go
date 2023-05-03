@@ -10,8 +10,8 @@ type ImageScale struct {
 	scaleWidth  float64
 }
 
-func NewImageScale(images collection.ImagesCollection, scaleHeight int, scaleWidth int) ImageScale {
-	return ImageScale{images: images, scaleHeight: float64(scaleHeight), scaleWidth: float64(scaleWidth)}
+func NewImageScale(images collection.ImagesCollection, scaleHeight float64, scaleWidth float64) ImageScale {
+	return ImageScale{images: images, scaleHeight: scaleHeight, scaleWidth: scaleWidth}
 }
 
 func (this ImageScale) GetScaleX() (scaleX float64) {

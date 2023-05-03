@@ -13,19 +13,19 @@ import (
 	"image/draw"
 )
 
+const DEFAULT_WIDTH_CORRECTION = 0.4935
+
 type BuilderAscii struct {
 	event ascii.QueueEvent
 	images collection.ImagesCollection
 	imgeScale scale.ImageScale
-	grayScale gray_scale.GrayScale
+	grayScale gray_scale.GrayScale 
 }
 
 func NewBuilderAscii(event ascii.QueueEvent) (builder BuilderAscii, err error) {
-	//TODO: From request ->
-	scaleHeight := 115
-	scaleWidth := 0
-	grayScale := gray_scale.DEFAULT
-	// <-
+	scaleHeight := event.GetHeight()
+	scaleWidth := event.GetWidth()
+	grayScale := event.GetGrayScale()
 
 	images, err := encoder_decoder.DecodeByPath(event.GetPath())
 	collection := collection.NewImagesCollection(images)
@@ -51,10 +51,11 @@ func (this BuilderAscii) buildFrame(position int) (frame string) {
 	
 	scaleX := this.imgeScale.GetScaleX()
 	scaleY := this.imgeScale.GetScaleY()
+	correction := this.getCorrection()
 
 	grayscale := this.desaturateImage(position)
-	for y := 0; y < height; y+=int(scaleY*2.5) {
-		for x := 0; x < width; x+= int(scaleX) {
+	for y := 0; y < height; y+=int(scaleY) {
+		for x := 0; x < width; x+= int(scaleX*correction) {
 			c := grayscale.GrayAt(x, y).Y
 			i := int(float64(c) / 255.0 * float64(len(this.grayScale)-1))
 			frame += string(this.grayScale[i])
@@ -87,5 +88,13 @@ func (this BuilderAscii) desaturateImage(position int) (grayscale *image.Gray) {
 		}
 	}
 
+	return
+}
+
+func (this BuilderAscii) getCorrection() (correction float64) {
+	correction = 1.0
+	if this.event.SwWidthFix() {
+		correction = DEFAULT_WIDTH_CORRECTION
+	}
 	return
 }

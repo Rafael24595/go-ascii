@@ -1,12 +1,13 @@
 package utils
 
 import (
-	"os"
-	"io"
 	"bytes"
-	"strings"
-	"net/http"
+	"io"
 	"io/ioutil"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
 )
 
 func ReaderExtension(reader io.Reader) string {
@@ -41,4 +42,20 @@ func CleanScapeChars(str string) string {
 
 func RemoveIndex[T interface{}](s []T, index int) []T{
 	return append(s[:index], s[index+1:]...)
+}
+
+func ParseFloat64(number string) (float64, error) {
+	if s, err := strconv.ParseFloat(number, 64); err == nil {
+		return s, nil
+	} else {
+		return 0, err
+	}
+}
+
+func ParseBoolean(boolean string) (bool, error) {
+	if s, err := strconv.ParseBool(boolean); err == nil {
+		return s, nil
+	} else {
+		return false, err
+	}
 }

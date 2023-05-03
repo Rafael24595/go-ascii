@@ -3,8 +3,8 @@ package ascii_view
 import (
 	"strings"
 	"go-ascii/src/commons/constants/request-state"
-	"go-ascii/src/infrastructure/dto"
-	"go-ascii/src/view/sources"
+	"go-ascii/src/commons/dto"
+	"go-ascii/src/infrastructure/io/sources"
 )
 
 type AsciiViewBuilder struct {

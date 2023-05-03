@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"go-ascii/src/service"
-	"go-ascii/src/infrastructure/dto"
+	"go-ascii/src/commons/dto"
 )
 
 type ControllerRest struct {

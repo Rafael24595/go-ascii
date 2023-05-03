@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go-ascii/src/service"
-	"go-ascii/src/view/ascii-view"
-	"go-ascii/src/view/form-view"
-	"go-ascii/src/view/menu-view"
+	"go-ascii/src/infrastructure/io/ascii-view"
+	"go-ascii/src/infrastructure/io/form-view"
+	"go-ascii/src/infrastructure/io/menu-view"
 )
 
 type ControllerView struct {

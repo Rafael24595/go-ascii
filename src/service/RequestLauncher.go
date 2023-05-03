@@ -8,7 +8,7 @@ import (
 	"go-ascii/src/commons/utils"
 	"go-ascii/src/domain/ascii"
 	"go-ascii/src/domain/ascii/builder"
-	"go-ascii/src/infrastructure/dto"
+	"go-ascii/src/commons/dto"
 	"go-ascii/src/infrastructure/repository"
 )
 

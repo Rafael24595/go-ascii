@@ -1,6 +1,7 @@
 package sources
 
 import (
+	"go-ascii/src/infrastructure/io/sources/dictionary"
 	"os"
 	"strconv"
 	"strings"
@@ -23,7 +24,7 @@ func BuildLine() string {
 }
 
 func BuildReloadScript(ms int) string {
-	scriptByte, err := os.ReadFile("src/view/sources/AsciiReloadScript.html")
+	scriptByte, err := os.ReadFile(dictionary.GetSource(dictionary.AsciiReloadScript))
 	if(err != nil){
 		panic(err)
 	}

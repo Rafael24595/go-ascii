@@ -1,10 +1,11 @@
 package ascii_view
 
 import (
+	"go-ascii/src/commons/dto"
+	"go-ascii/src/infrastructure/io/sources/dictionary"
 	"os"
 	"strconv"
 	"strings"
-	"go-ascii/src/infrastructure/dto"
 )
 
 type asciiAnimationViewBuilder struct {
@@ -41,7 +42,7 @@ func (this asciiAnimationViewBuilder) buildAnimationBody() string {
 }
 
 func (this asciiAnimationViewBuilder) buildDelayForm() string {
-	scriptByte, err := os.ReadFile("src/view/sources/AsciiGifDelay.html")
+	scriptByte, err := os.ReadFile(dictionary.GetSource(dictionary.AsciiGifDelay))
 	if(err != nil){
 		panic(err)
 	}
@@ -50,7 +51,7 @@ func (this asciiAnimationViewBuilder) buildDelayForm() string {
 }
 
 func (this asciiAnimationViewBuilder) buildAnimationScript() string {
-	scriptByte, err := os.ReadFile("src/view/sources/AsciiGifScript.html")
+	scriptByte, err := os.ReadFile(dictionary.GetSource(dictionary.AsciiGifScript))
 	if(err != nil){
 		panic(err)
 	}

@@ -2,8 +2,8 @@ package menu_view
 
 import (
 	"strings"
-	"go-ascii/src/infrastructure/dto"
-	"go-ascii/src/view/sources"
+	"go-ascii/src/commons/dto"
+	"go-ascii/src/infrastructure/io/sources"
 )
 
 type MenuViewBuilder struct {

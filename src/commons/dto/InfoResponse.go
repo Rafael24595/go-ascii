@@ -1,6 +1,6 @@
 package dto
 
 type InfoResponse struct {
-	Code      string
+	Code string
 	Extension string
 }

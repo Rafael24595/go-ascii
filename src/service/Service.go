@@ -1,7 +1,7 @@
 package service
 
 import (
-	"go-ascii/src/infrastructure/dto"
+	"go-ascii/src/commons/dto"
 	"go-ascii/src/infrastructure/repository"
 )
 

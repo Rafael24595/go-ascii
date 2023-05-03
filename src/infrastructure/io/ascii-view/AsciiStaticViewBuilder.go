@@ -2,7 +2,7 @@ package ascii_view
 
 import (
 	"strings"
-	"go-ascii/src/infrastructure/dto"
+	"go-ascii/src/commons/dto"
 )
 
 type asciiStaticViewBuilder struct {
