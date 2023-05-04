@@ -1,17 +1,17 @@
 package repository
 
 import (
-	"context"
-	"encoding/base64"
-	"go-ascii/src/commons/constants/request-state"
-	"go-ascii/src/commons/dto"
-	"go-ascii/src/domain/ascii"
 	"os"
 	"time"
-
+	"strings"
+	"context"
+	"encoding/base64"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/commons/dto"
+	"go-ascii/src/domain/ascii"
 )
 
 type CommandRepositoryMongo struct {
@@ -20,19 +20,34 @@ type CommandRepositoryMongo struct {
 }
 
 func NewCommandRepositoryMongo(queryRepository QueryRepository) CommandRepository {
-	server := os.Getenv("ME_CONFIG_MONGODB_SERVER")
-	if server == "" {
-		server = "localhost"
-	}
-	println("MongoDB server: " + server)
+	connection := getConnectionUri()
 	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@" + server + ":27017"))
+	options := options.Client().ApplyURI(connection)
+	client, err := mongo.Connect(ctx, options)
 	if err != nil { 
 		panic(err)
 	}
 	collection := client.Database("go-ascii").Collection("ascii")
 	return &CommandRepositoryMongo{queryRepository: queryRepository, collection: *collection}
+}
+
+func getConnectionUri() string {
+	user := os.Getenv("ASCII_MONGODB_USERNAME")
+	password := os.Getenv("ASCII_MONGODB_PASSWORD")
+	server := os.Getenv("ASCII_MONGODB_SERVER")
+	port := os.Getenv("ASCII_MONGODB_PORT")
+
+	var connection strings.Builder
+	connection.WriteString("mongodb://")
+	connection.WriteString(user)
+	connection.WriteString(":")
+	connection.WriteString(password)
+	connection.WriteString("@")
+	connection.WriteString(server)
+	connection.WriteString(":")
+	connection.WriteString(port)
+	return connection.String()
 }
 
 func (this CommandRepositoryMongo) OnLoad() bool {

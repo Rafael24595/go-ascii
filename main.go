@@ -4,13 +4,24 @@ import (
 	"os"
 	"syscall"
 	"os/signal"
+	"github.com/joho/godotenv"
 	"github.com/gin-gonic/gin"
 	"go-ascii/src/commons/temp-source"
 	"go-ascii/src/infrastructure/controller"
 	"go-ascii/src/infrastructure/controller/middleware"
 	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/service"
+
 )
+
+func init() {
+
+    err := godotenv.Load(".env")
+
+    if err != nil {
+        panic(err)
+    }
+}
 
 func main() {
 	serve()
@@ -34,5 +45,8 @@ func serve() {
 	controller.NewControllerRest(router, serviceAscii)
 	controller.NewControllerView(router, serviceAscii)
 
-	go router.Run("0.0.0.0:8080")
+	domain := os.Getenv("GO_ASCII_DOMAIN")
+	port := os.Getenv("GO_ASCII_PORT")
+
+	go router.Run( domain + ":" + port)
 }
