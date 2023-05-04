@@ -27,7 +27,9 @@ func serve() {
 	router.Use(middleware.Cors())
 
 	queryRepository := repository.NewQueryRepositoryInmemory()
-	commandRepository := repository.NewCommandRepositoryInmemory(queryRepository)
+	queryRepository.OnLoad()
+	commandRepository := repository.NewCommandRepositoryMongo(queryRepository)
+	commandRepository.OnLoad()
 	serviceAscii := service.NewService(queryRepository, commandRepository)
 	controller.NewControllerRest(router, serviceAscii)
 	controller.NewControllerView(router, serviceAscii)

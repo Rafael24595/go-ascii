@@ -9,11 +9,11 @@ import (
 )
 
 type AsciiViewBuilder struct {
-	image dto.AsciiResponse
+	image dto.InfoAsciiResponse
 	args map[string]string
 }
 
-func NewAsciiViewBuilder(image dto.AsciiResponse, args map[string]string) AsciiViewBuilder {
+func NewAsciiViewBuilder(image dto.InfoAsciiResponse, args map[string]string) AsciiViewBuilder {
 	return AsciiViewBuilder{image: image, args: args}
 }
 

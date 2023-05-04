@@ -24,10 +24,10 @@ func (this Service) FindAllAscii() (response []dto.InfoResponse) {
 	return
 }
 
-func (this Service) FindAscii(code string) dto.AsciiResponse {
+func (this Service) FindAscii(code string) dto.InfoAsciiResponse {
 	image := this.queryRepository.FindAscii(code)
 	height, width := image.GetDimensions()
-	response := dto.AsciiResponse{Name: image.GetName(), Height: height, Width: width, Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
+	response := dto.InfoAsciiResponse{Name: image.GetName(), Height: height, Width: width, Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
 	if response.Status == "" {
 		status, message := this.requestLauncher.CheckStatus(code)
 		response.Status = status

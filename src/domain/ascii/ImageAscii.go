@@ -39,6 +39,10 @@ func (this *ImageAscii) SetExtension(extension string) {
 	this.extension = extension
 }
 
+func (this *ImageAscii) SetFrames(frames []string) {
+	this.frames = frames
+}
+
 func (this *ImageAscii) SetStatus(status string) {
 	this.status = status
 }

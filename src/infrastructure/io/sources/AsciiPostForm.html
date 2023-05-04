@@ -1,18 +1,18 @@
 <form id="form" action="/api/ascii" view="/api/view/ascii" method="post">
-    <label for="code">Code:</label><br>
+    <label for="code" title="Identifier">Code:</label><br>
     <input type="text" id="code" name="code" value=""><br>
-    <label for="height">Height:</label><br>
+    <label for="height" title="If the height value equals zero the image will maintain aspect ratio">Height:</label><br>
     <input type="number" id="height" name="height" value=""><br>
-    <label for="width">Width:</label><br>
+    <label for="width" title="If the width value equals zero the image will maintain aspect ratio">Width:</label><br>
     <input type="number" id="width" name="width" value=""><br>
-    <label for="sw_width_fix">Width fix:</label><br>
+    <label for="sw_width_fix" title="Increase the width value to maintain the visual aspect ratio">Width fix:</label><br>
     <select id="sw_width_fix" name="sw_width_fix" value="">
-        <option value="true">Enabled</option>
-        <option value="false">Disabled</option>
+        <option value="true">ENABLED</option>
+        <option value="false">DISABLED</option>
     </select><br>
-    <label for="code">GrayScale:</label><br>
+    <label for="code" title="Gray scale">GrayScale:</label><br>
     <select id="gray_scale" name="gray_scale" value="">$GRAYSCALES</select><br>
-    <label for="image">* Image:</label><br>
+    <label for="image" title="Allowed formats: *.jpg, *.png, *.gif">* Image:</label><br>
     <input type="file" id="image" name="" value=""><br><br>
     <input type="hidden" id="image64" name="image" value=""><br><br>
     <input type="submit" onclick="post(event)" value="Submit">

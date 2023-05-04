@@ -10,6 +10,14 @@ func NewCommandRepositoryInmemory(queryRepository QueryRepository) CommandReposi
 	return CommandRepositoryInmemory{queryRepository: queryRepository}
 }
 
+func (this CommandRepositoryInmemory) OnLoad() bool {
+	return true
+}
+
+func (this CommandRepositoryInmemory) OnExit() bool {
+	return true
+}
+
 func (this CommandRepositoryInmemory) InsertAscii(image ascii.ImageAscii) string {
 	this.InsertQuery(image)
 	return image.GetName()
