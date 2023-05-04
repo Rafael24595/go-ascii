@@ -39,13 +39,11 @@ func (this AsciiFormViewBuilder) buildFormScript() string {
 func (this AsciiFormViewBuilder) builGrayScaleOptions() string {
 	var html strings.Builder
 	for _, key := range gray_scale.GetGrayScaleList() {
-		println(key)
 		selected := ""
 		if key == string(gray_scale.DEFAULT) {
 			selected = "selected"
 		}
 		html.WriteString("<option value=\""+ key +"\" "+ selected +">"+ key +"</option>")
 	}
-	println(html.String())
 	return html.String()
 }

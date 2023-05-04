@@ -13,7 +13,7 @@ import (
 	"image/draw"
 )
 
-const DEFAULT_WIDTH_CORRECTION = 0.4935
+const DEFAULT_WIDTH_CORRECTION = 0.475
 
 type BuilderAscii struct {
 	event ascii.QueueEvent
@@ -46,17 +46,17 @@ func (this BuilderAscii) Build() ascii.ImageAscii {
 }
 
 func (this BuilderAscii) buildFrame(position int) (frame string) {
-	height := int(this.images.GetImageHeight())
-	width := int(this.images.GetImageWidth())
+	height := this.images.GetImageHeight()
+	width := this.images.GetImageWidth()
 	
 	scaleX := this.imgeScale.GetScaleX()
 	scaleY := this.imgeScale.GetScaleY()
 	correction := this.getCorrection()
 
 	grayscale := this.desaturateImage(position)
-	for y := 0; y < height; y+=int(scaleY) {
-		for x := 0; x < width; x+= int(scaleX*correction) {
-			c := grayscale.GrayAt(x, y).Y
+	for y := 0.0; y < height; y+=scaleY {
+		for x := 0.0; x < width; x+=scaleX*correction {
+			c := grayscale.GrayAt(int(x), int(y)).Y
 			i := int(float64(c) / 255.0 * float64(len(this.grayScale)-1))
 			frame += string(this.grayScale[i])
 		}

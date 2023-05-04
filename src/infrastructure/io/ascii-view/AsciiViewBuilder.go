@@ -2,6 +2,7 @@ package ascii_view
 
 import (
 	"strings"
+	"strconv"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/infrastructure/io/sources"
@@ -25,6 +26,7 @@ func (this AsciiViewBuilder) Build() (body string) {
 
 	html.WriteString(this.buildCode())
 	html.WriteString(this.buildType())
+	html.WriteString(this.buildScale())
 	html.WriteString(this.buildStatus())
 	html.WriteString(this.buildMessage())
 
@@ -56,6 +58,16 @@ func (this AsciiViewBuilder) buildType() string {
 	var body strings.Builder
 	body.WriteString("<p>")
 	body.WriteString("Type: " + this.image.Extension)
+	body.WriteString("</p>")
+	return body.String()
+}
+
+func (this AsciiViewBuilder) buildScale() string {
+	var body strings.Builder
+	body.WriteString("<p>")
+	body.WriteString("Height: " + strconv.Itoa(this.image.Height))
+	body.WriteString(" - ")
+	body.WriteString("Width: " + strconv.Itoa(this.image.Width))
 	body.WriteString("</p>")
 	return body.String()
 }

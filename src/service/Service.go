@@ -26,7 +26,8 @@ func (this Service) FindAllAscii() (response []dto.InfoResponse) {
 
 func (this Service) FindAscii(code string) dto.AsciiResponse {
 	image := this.queryRepository.FindAscii(code)
-	response := dto.AsciiResponse{Name: image.GetName(), Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
+	height, width := image.GetDimensions()
+	response := dto.AsciiResponse{Name: image.GetName(), Height: height, Width: width, Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
 	if response.Status == "" {
 		status, message := this.requestLauncher.CheckStatus(code)
 		response.Status = status

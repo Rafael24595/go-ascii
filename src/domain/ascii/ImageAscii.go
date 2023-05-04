@@ -1,10 +1,14 @@
 package ascii
 
+import (
+	"strings"
+)
+
 type ImageAscii struct {
-	name string
+	name      string
 	extension string
-	status string
-	frames []string
+	status    string
+	frames    []string
 }
 
 func NewImageAscii(name string, extension string, status string, frames []string) ImageAscii {
@@ -41,4 +45,25 @@ func (this *ImageAscii) SetStatus(status string) {
 
 func (this *ImageAscii) AppendFrame(frame string) {
 	this.frames = append(this.frames, frame)
+}
+
+func (this *ImageAscii) GetDimensions() (int, int) {
+	rowsCount := 0
+	rowsLength := 0
+	for _, frame := range this.frames {
+		rows := strings.Split(frame, "\n")
+		for _, row := range rows {
+			if len(row) > 0 {
+				rowsLength += len(row)
+				rowsCount++
+			}
+		}
+	}
+	if(rowsCount != 0 && rowsLength != 0){
+		height := rowsCount / len(this.frames)
+		width := (rowsLength / len(this.frames)) / height
+		return height , width
+	} else {
+		return 0, 0
+	}
 }
