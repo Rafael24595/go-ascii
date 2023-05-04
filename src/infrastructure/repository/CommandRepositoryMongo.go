@@ -6,6 +6,7 @@ import (
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/domain/ascii"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,9 +20,14 @@ type CommandRepositoryMongo struct {
 }
 
 func NewCommandRepositoryMongo(queryRepository QueryRepository) CommandRepository {
+	server := os.Getenv("ME_CONFIG_MONGODB_SERVER")
+	if server == "" {
+		server = "localhost"
+	}
+	println("MongoDB server: " + server)
 	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@mongodb:27017"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@" + server + ":27017"))
 	if err != nil { 
 		panic(err)
 	}
