@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
-	"go-ascii/src/infrastructure/io/sources"
+	"go-ascii/src/infrastructure/input-output/sources"
 )
 
 type AsciiViewBuilder struct {

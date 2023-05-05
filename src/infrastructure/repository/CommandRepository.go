@@ -7,6 +7,7 @@ import (
 
 type CommandRepository interface {
 	commons.Dependency
-	InsertAscii(image ascii.ImageAscii) string
-	InsertQuery(image ascii.ImageAscii)
+	Insert(image ascii.ImageAscii) string
+	Delete(image ascii.ImageAscii) string
+	ToQuery(image ascii.ImageAscii)
 }

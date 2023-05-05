@@ -1,6 +1,9 @@
 package repository
 
-import "go-ascii/src/domain/ascii"
+import (
+	request_state "go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/domain/ascii"
+)
 
 type CommandRepositoryInmemory struct {
 	queryRepository QueryRepository
@@ -18,11 +21,17 @@ func (this CommandRepositoryInmemory) OnExit() bool {
 	return true
 }
 
-func (this CommandRepositoryInmemory) InsertAscii(image ascii.ImageAscii) string {
-	this.InsertQuery(image)
+func (this CommandRepositoryInmemory) Insert(image ascii.ImageAscii) string {
+	this.ToQuery(image)
 	return image.GetName()
 }
 
-func (this CommandRepositoryInmemory) InsertQuery(image ascii.ImageAscii) {
+func (this CommandRepositoryInmemory) Delete(image ascii.ImageAscii) string {
+	image.SetStatus(request_state.DELETED)
+	this.ToQuery(image)
+	return image.GetName()
+}
+
+func (this CommandRepositoryInmemory) ToQuery(image ascii.ImageAscii) {
 	this.queryRepository.InsertCommand(image)
 }

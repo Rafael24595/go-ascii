@@ -56,7 +56,7 @@ func (this CommandRepositoryMongo) OnLoad() bool {
 }
 
 func (this CommandRepositoryMongo) fillQuery() {
-	cursor, err := this.collection.Find(context.TODO(), bson.D{})
+	cursor, err := this.collection.Find(context.TODO(), bson.M{"status": bson.M{ "$ne": request_state.DELETED }})
 	if err != nil {
         panic(err)
     }
@@ -69,25 +69,44 @@ func (this CommandRepositoryMongo) fillQuery() {
 
 		image := ascii.NewImageAscii(dto.Name, dto.Extension, dto.Status, this.decodeFrames(dto))
 
-        this.InsertQuery(image)
+        this.ToQuery(image)
     }
 }
 
 func (this CommandRepositoryMongo) OnExit() bool {
+	this.cleanDeleted()
 	return true
 }
 
-func (this *CommandRepositoryMongo) InsertAscii(image ascii.ImageAscii) string {
+func (this CommandRepositoryMongo) cleanDeleted() {
+	_, err := this.collection.DeleteMany(context.TODO(), bson.M{"status": request_state.DELETED})
+	if err != nil {
+        panic(err)
+    }
+}
+
+func (this *CommandRepositoryMongo) Insert(image ascii.ImageAscii) string {
 	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), request_state.STORED, this.encodeFrames(image))
 	_, err := this.collection.InsertOne(context.Background(), response)
 	if err != nil { 
 		panic(err)
 	}
-	this.InsertQuery(image)
+	this.ToQuery(image)
 	return image.GetName()
 }
 
-func (this CommandRepositoryMongo) InsertQuery(image ascii.ImageAscii) {
+func (this *CommandRepositoryMongo) Delete(image ascii.ImageAscii) string {
+	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), request_state.DELETED, this.encodeFrames(image))
+	filter := bson.M{"name": image.GetName()}
+	_, err := this.collection.ReplaceOne(context.Background(), filter, response)
+	if err != nil { 
+		panic(err)
+	}
+	this.ToQuery(image)
+	return image.GetName()
+}
+
+func (this CommandRepositoryMongo) ToQuery(image ascii.ImageAscii) {
 	this.queryRepository.InsertCommand(image)
 }
 

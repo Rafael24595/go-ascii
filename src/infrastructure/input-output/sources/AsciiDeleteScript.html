@@ -1,0 +1,35 @@
+<script type="text/javascript">
+
+    async function deleteAscii(event) {
+        event.preventDefault();
+        let code = event.target.getAttribute("code");
+        if(confirm("Are you sure you want to delete '" + code + "' registry from the database?")){
+            const path = event.target.href;
+            const view = event.target.getAttribute("view");
+
+            try {
+                const fetchOptions = {
+                    method: "DELETE",
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                    }
+                };
+                let res = await fetch(path, fetchOptions);
+                if (!res.ok) {
+                    let error = await res.text();
+                    throw new Error(error);
+                }
+                code = await res.text()
+                code = code.replaceAll('"', '')
+
+                window.location.href = view + "/" + code;
+            } catch (error) {
+                console.log(error)
+                alert("Something goes wrong.")
+            }
+        }
+    }
+
+</script>

@@ -1,10 +1,10 @@
 package sources
 
 import (
-	"go-ascii/src/infrastructure/io/sources/dictionary"
 	"os"
 	"strconv"
 	"strings"
+	"go-ascii/src/infrastructure/input-output/sources/dictionary"
 )
 
 func BuildBack() string {

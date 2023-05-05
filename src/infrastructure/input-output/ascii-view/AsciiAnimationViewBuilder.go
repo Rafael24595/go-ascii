@@ -1,11 +1,11 @@
 package ascii_view
 
 import (
-	"go-ascii/src/commons/dto"
-	"go-ascii/src/infrastructure/io/sources/dictionary"
 	"os"
 	"strconv"
 	"strings"
+	"go-ascii/src/commons/dto"
+	"go-ascii/src/infrastructure/input-output/sources/dictionary"
 )
 
 type asciiAnimationViewBuilder struct {

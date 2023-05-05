@@ -14,10 +14,11 @@ import (
 
 )
 
+var queryRepository repository.QueryRepository
+var commandRepository repository.CommandRepository
+
 func init() {
-
     err := godotenv.Load(".env")
-
     if err != nil {
         panic(err)
     }
@@ -31,15 +32,18 @@ func main() {
 	<-quit
 
 	tempsource.CleanSessionSources()
+
+	queryRepository.OnExit()
+	commandRepository.OnExit()
 }
 
 func serve() {
 	router := gin.Default()
 	router.Use(middleware.Cors())
 
-	queryRepository := repository.NewQueryRepositoryInmemory()
+	queryRepository = repository.NewQueryRepositoryInmemory()
 	queryRepository.OnLoad()
-	commandRepository := repository.NewCommandRepositoryMongo(queryRepository)
+	commandRepository = repository.NewCommandRepositoryMongo(queryRepository)
 	commandRepository.OnLoad()
 	serviceAscii := service.NewService(queryRepository, commandRepository)
 	controller.NewControllerRest(router, serviceAscii)

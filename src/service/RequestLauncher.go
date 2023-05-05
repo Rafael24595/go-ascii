@@ -81,7 +81,7 @@ func (this RequestLauncher) insertAscii(event ascii.QueueEvent) {
 		this.markAsFailed(event)
 	} else {
 		imageAscii := builderAscii.Build()
-		this.commandRepository.InsertAscii(imageAscii)
+		this.commandRepository.Insert(imageAscii)
 		this.markAsComplete(event)
 	}
 }
@@ -93,6 +93,7 @@ func (this RequestLauncher) markAsComplete(event ascii.QueueEvent) {
 	}
 
 	*this.success = append(*this.success, event.GetCode())
+	tempsource.CleanSource(event.GetCode())
 }
 
 func (this RequestLauncher) markAsFailed(event ascii.QueueEvent) {

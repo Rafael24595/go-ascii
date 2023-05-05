@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 	"go-ascii/src/commons/constants/gray-scale"
-	"go-ascii/src/infrastructure/io/sources"
-	"go-ascii/src/infrastructure/io/sources/dictionary"
+	"go-ascii/src/infrastructure/input-output/sources"
+	"go-ascii/src/infrastructure/input-output/sources/dictionary"
 )
 
 type AsciiFormViewBuilder struct {

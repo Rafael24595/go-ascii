@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"go-ascii/src/service"
-	"go-ascii/src/infrastructure/io/ascii-view"
-	"go-ascii/src/infrastructure/io/form-view"
-	"go-ascii/src/infrastructure/io/menu-view"
+	"go-ascii/src/infrastructure/input-output/ascii-view"
+	"go-ascii/src/infrastructure/input-output/form-view"
+	"go-ascii/src/infrastructure/input-output/menu-view"
 )
 
 type ControllerView struct {
@@ -23,15 +23,20 @@ func NewControllerView(router *gin.Engine, service service.Service) (controller 
 }
 
 func (this ControllerView) findAllAscii(c *gin.Context) {
-	images := this.Service.FindAllAscii()
+	images := this.Service.FindAll()
 	builder := menu_view.NewMenuViewBuilder(images)
 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(builder.Build()))
 }
 
 func (this ControllerView) findAscii(c *gin.Context) {
 	code := c.Param("code")
-	image := this.Service.FindAscii(code)
+	image := this.Service.Find(code)
 	builder := ascii_view.NewAsciiViewBuilder(image, this.findAsciiArgs(c))
+	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(builder.Build()))
+}
+
+func (this ControllerView) insertAscii(c *gin.Context) {
+	builder := form_view.NewAsciiAsciiFormViewBuilder()
 	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(builder.Build()))
 }
 
@@ -39,9 +44,4 @@ func (this ControllerView) findAsciiArgs(c *gin.Context) (args map[string]string
 	args = map[string]string{}
 	args["delay"] = c.Query("delay")
 	return 
-}
-
-func (this ControllerView) insertAscii(c *gin.Context) {
-	builder := form_view.NewAsciiAsciiFormViewBuilder()
-	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(builder.Build()))
 }
