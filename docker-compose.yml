@@ -7,7 +7,12 @@ services:
     ports:
      - "8080:8080"
     environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - GO_ASCII_DOMAIN=0.0.0.0
+      - GO_ASCII_PORT=8080
+      - ASCII_MONGODB_USERNAME=root
+      - ASCII_MONGODB_PASSWORD=example
+      - ASCII_MONGODB_SERVER=mongodb
+      - ASCII_MONGODB_PORT=27017
   mongodb:
     container_name: mongodb
     image: mongo  
