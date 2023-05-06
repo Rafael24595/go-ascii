@@ -1,8 +1,11 @@
 package dependency_dictionary
 
-import "go-ascii/src/infrastructure/repository"
+import (
+	"go-ascii/src/commons/dependency-container"
+	"go-ascii/src/infrastructure/repository"
+)
 
-func FindQueryDependency(code string, args map[string]interface{}) repository.QueryRepository {
+func FindQueryDependency(code string) repository.QueryRepository {
 	switch code {
 		case repository.QueryRepositoryInmemoryKey:
 			return repository.NewQueryRepositoryInmemory()
@@ -11,13 +14,13 @@ func FindQueryDependency(code string, args map[string]interface{}) repository.Qu
     } 
 }
 
-func FindCommandDependency(code string, args map[string]interface{}) repository.CommandRepository {
+func FindCommandDependency(code string) repository.CommandRepository {
 	switch code {
 		case repository.CommandRepositoryInmemoryKey:
-			repo := args["query_repository"].(repository.QueryRepository)
+			repo := dependency_container.GetInstance().GetQueryRepository()
 			return repository.NewCommandRepositoryInmemory(repo)
 		case repository.CommandRepositoryMongoKey:
-			repo := args["query_repository"].(repository.QueryRepository)
+			repo := dependency_container.GetInstance().GetQueryRepository()
 			return repository.NewCommandRepositoryMongo(repo)
 		default:
 			panic("Dependency does not exists.")

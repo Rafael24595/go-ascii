@@ -23,15 +23,13 @@ func buildDependencyContainer() dependency_container.DependencyContainer {
 	dependencyContainer := dependency_container.GetInstance()
 
 	queryRepositoryKey := os.Getenv("GO_ASCII_QUERY_REPOSITORY")
-	queryRepositoryArgs := map[string]interface{}{}
-	queryRepository := dependency_dictionary.FindQueryDependency(queryRepositoryKey, queryRepositoryArgs)
+	queryRepository := dependency_dictionary.FindQueryDependency(queryRepositoryKey)
+	dependencyContainer.SetQueryRepository(queryRepository)
 
 	commandRepositoryKey := os.Getenv("GO_ASCII_COMMAND_REPOSITORY")
-	commandRepositoryArgs := map[string]interface{}{"query_repository": queryRepository}
-	commandRepository := dependency_dictionary.FindCommandDependency(commandRepositoryKey, commandRepositoryArgs)
-
-	dependencyContainer.SetQueryRepository(queryRepository)
+	commandRepository := dependency_dictionary.FindCommandDependency(commandRepositoryKey)
 	dependencyContainer.SetCommandRepository(commandRepository)
+
 
 	dependencyContainer.OnLoad()
 
