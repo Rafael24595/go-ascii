@@ -95,8 +95,19 @@ func (this *CommandRepositoryMongo) Insert(image ascii.ImageAscii) string {
 	return image.GetName()
 }
 
+func (this *CommandRepositoryMongo) Modify(image ascii.ImageAscii) string {
+	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), image.GetStatus(), this.encodeFrames(image))
+	filter := bson.M{"name": image.GetName()}
+	_, err := this.collection.ReplaceOne(context.Background(), filter, response)
+	if err != nil { 
+		panic(err)
+	}
+	this.ToQuery(image)
+	return image.GetName()
+}
+
 func (this *CommandRepositoryMongo) Delete(image ascii.ImageAscii) string {
-	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), request_state.DELETED, this.encodeFrames(image))
+	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), image.GetStatus(), this.encodeFrames(image))
 	filter := bson.M{"name": image.GetName()}
 	_, err := this.collection.ReplaceOne(context.Background(), filter, response)
 	if err != nil { 

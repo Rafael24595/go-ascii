@@ -16,6 +16,7 @@ func NewControllerRest(router *gin.Engine, service service.Service) (controller 
 	controller.RouterGroup.GET("/ascii", controller.findAll)
 	controller.RouterGroup.GET("/ascii/:code", controller.find)
 	controller.RouterGroup.POST("/ascii", controller.insert)
+	controller.RouterGroup.PUT("/ascii/:code", controller.modify)
 	controller.RouterGroup.DELETE("/ascii/:code", controller.delete)
 	return
 }
@@ -40,6 +41,12 @@ func (this ControllerRest) insert(c *gin.Context) {
 		c.JSON(500, err)
 	}
 	c.JSON(200, this.Service.Insert(asciiRequest))
+}
+
+func (this ControllerRest) modify(c *gin.Context) {
+	code := c.Param("code")
+	image:= this.Service.Modify(code)
+	c.JSON(200, &image)
 }
 
 func (this ControllerRest) delete(c *gin.Context) {

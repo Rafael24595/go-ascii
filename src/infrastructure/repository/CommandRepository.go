@@ -8,6 +8,7 @@ import (
 type CommandRepository interface {
 	commons.Dependency
 	Insert(image ascii.ImageAscii) string
+	Modify(image ascii.ImageAscii) string
 	Delete(image ascii.ImageAscii) string
 	ToQuery(image ascii.ImageAscii)
 }

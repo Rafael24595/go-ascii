@@ -21,7 +21,7 @@ func (this Service) FindAll() (response []dto.InfoResponse) {
 	info := this.queryRepository.FindAllAscii()
 	response = []dto.InfoResponse{}
 	for _, data := range info {
-		response = append(response, dto.InfoResponse{Code: data.GetCode(), Extension: data.GetExtension()})
+		response = append(response, dto.InfoResponse{Code: data.GetCode(), Status: data.GetStatus(), Extension: data.GetExtension()})
 	}
 	return
 }
@@ -42,6 +42,12 @@ func (this Service) Find(code string) dto.InfoAsciiResponse {
 
 func (this Service) Insert(dto dto.ImageRequest) string {
 	return this.requestLauncher.PushAsciiRequest(dto)
+}
+
+func (this Service) Modify(code string) string {
+	image := this.queryRepository.FindAscii(code)
+	image.SetStatus(request_state.RESTORED)
+	return this.commandRepository.Modify(image)
 }
 
 func (this Service) Delete(code string) string {

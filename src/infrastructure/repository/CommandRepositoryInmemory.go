@@ -26,6 +26,12 @@ func (this CommandRepositoryInmemory) Insert(image ascii.ImageAscii) string {
 	return image.GetName()
 }
 
+func (this CommandRepositoryInmemory) Modify(image ascii.ImageAscii) string {
+	image.SetStatus(request_state.RESTORED)
+	this.ToQuery(image)
+	return image.GetName()
+}
+
 func (this CommandRepositoryInmemory) Delete(image ascii.ImageAscii) string {
 	image.SetStatus(request_state.DELETED)
 	this.ToQuery(image)

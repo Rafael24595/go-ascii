@@ -24,7 +24,7 @@ func (this QueryRepositoryInmemory) FindAllAscii() (info []ascii.ImageInfo) {
 	info = make([]ascii.ImageInfo, 0, len(this.storage))
 	for key := range this.storage {
 		image := this.storage[key]
-		data := ascii.NewImageInfo(image.GetName(), image.GetExtension())
+		data := ascii.NewImageInfo(image.GetName(), image.GetStatus(), image.GetExtension())
 		info = append(info, data)
 	}
 	return

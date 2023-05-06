@@ -9,6 +9,7 @@ const (
 	AsciiGifScript SourceDirectory = "AsciiGifScript.html"
 	AsciiPostForm SourceDirectory = "AsciiPostForm.html"
 	AsciiReloadScript SourceDirectory = "AsciiReloadScript.html"
+	AsciiRestoreScript SourceDirectory = "AsciiRestoreScript.html"
 )
 
 func GetSource(code SourceDirectory) string {

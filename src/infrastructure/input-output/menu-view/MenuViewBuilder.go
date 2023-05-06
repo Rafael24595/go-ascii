@@ -1,11 +1,12 @@
 package menu_view
 
 import (
+	"os"
+	"strings"
+	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/infrastructure/input-output/sources"
 	"go-ascii/src/infrastructure/input-output/sources/dictionary"
-	"os"
-	"strings"
 )
 
 type MenuViewBuilder struct {
@@ -31,17 +32,23 @@ func (this MenuViewBuilder) Build() (body string) {
 			uriSource := "/api/ascii/" + source.Code
 			uriView := "/api/view/ascii"
 			uriViewSource := uriView + "/" + source.Code
-			html.WriteString("<li>")
+			style := ""
+			if source.Status == request_state.DELETED {
+				style += "text-decoration: line-through;"
+			}
+			html.WriteString("<li style=\"" + style + "\">")
 			html.WriteString("<b>" + source.Code + " - [" + source.Extension + "]</b> >>> ")
 			html.WriteString("<ul>")
 			html.WriteString("<li>")
 			html.WriteString("<span>View: </span>")
 			html.WriteString("<a href=\"" + uriViewSource + "\">" + uriViewSource + "</a>")
 			html.WriteString("</li>")
-			html.WriteString("<li>")
-			html.WriteString("<span>Delete: </span>")
-			html.WriteString("<a onclick=\"deleteAscii(event)\" code=\"" +  source.Code+ "\" view=\"" + uriView + "\" href=\"" + uriSource + "\">" + uriSource + "</a>")
-			html.WriteString("</li>")
+			if source.Status != request_state.DELETED {
+				html.WriteString("<li>")
+				html.WriteString("<span>Delete: </span>")
+				html.WriteString("<a onclick=\"deleteAscii(event)\" code=\"" +  source.Code+ "\" view=\"" + uriView + "\" href=\"" + uriSource + "\">" + uriSource + "</a>")
+				html.WriteString("</li>")
+			}
 			html.WriteString("</ul>")
 			html.WriteString("</li>")
 			html.WriteString("<br>")

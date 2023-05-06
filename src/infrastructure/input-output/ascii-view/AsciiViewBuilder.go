@@ -1,11 +1,13 @@
 package ascii_view
 
 import (
-	"strings"
+	"os"
 	"strconv"
+	"strings"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/infrastructure/input-output/sources"
+	"go-ascii/src/infrastructure/input-output/sources/dictionary"
 )
 
 type AsciiViewBuilder struct {
@@ -29,6 +31,13 @@ func (this AsciiViewBuilder) Build() (body string) {
 	html.WriteString(this.buildScale())
 	html.WriteString(this.buildStatus())
 	html.WriteString(this.buildMessage())
+
+	if this.image.Status == request_state.DELETED {
+		uriSource := "/api/ascii/" + this.image.Name
+		uriView := "/api/view/ascii"
+		html.WriteString("<p><b>*** This source will be deleted, click <a onclick=\"restoreAscii(event)\" code=\"" +  this.image.Name + "\" view=\"" + uriView + "\" href=\"" + uriSource + "\">HERE</a> to restore it. ***</b></p>")
+		html.WriteString(this.buildRestoreScript())
+	} 
 
 	if len(this.image.Frames) == 1 {
 		static := newAsciiStaticViewBuilder(this.image, this.args)
@@ -88,4 +97,14 @@ func (this AsciiViewBuilder) buildMessage() string {
 		body.WriteString("</p>")
 	}
 	return body.String()
+}
+
+func (this AsciiViewBuilder) buildRestoreScript() string {
+	path := dictionary.GetSource(dictionary.AsciiRestoreScript)
+	scriptByte, err := os.ReadFile(path)
+	if(err != nil){
+		panic(err)
+	}
+
+	return string(scriptByte)
 }
