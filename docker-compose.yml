@@ -9,6 +9,8 @@ services:
     environment:
       - GO_ASCII_DOMAIN=0.0.0.0
       - GO_ASCII_PORT=8080
+      - GO_ASCII_QUERY_REPOSITORY=QueryRepositoryInmemory
+      - GO_ASCII_COMMAND_REPOSITORY=CommandRepositoryMongo
       - ASCII_MONGODB_USERNAME=root
       - ASCII_MONGODB_PASSWORD=example
       - ASCII_MONGODB_SERVER=mongodb
