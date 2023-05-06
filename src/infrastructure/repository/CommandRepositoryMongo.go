@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"os"
 	"time"
 	"strings"
 	"context"
@@ -21,8 +20,8 @@ type CommandRepositoryMongo struct {
 	collection mongo.Collection
 }
 
-func NewCommandRepositoryMongo(queryRepository QueryRepository) CommandRepository {
-	connection := getConnectionUri()
+func NewCommandRepositoryMongo(queryRepository QueryRepository, args map[string]string) CommandRepository {
+	connection := getConnectionUri(args)
 	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
 	defer cancel()
 	options := options.Client().ApplyURI(connection)
@@ -34,11 +33,11 @@ func NewCommandRepositoryMongo(queryRepository QueryRepository) CommandRepositor
 	return &CommandRepositoryMongo{queryRepository: queryRepository, collection: *collection}
 }
 
-func getConnectionUri() string {
-	user := os.Getenv("ASCII_MONGODB_USERNAME")
-	password := os.Getenv("ASCII_MONGODB_PASSWORD")
-	server := os.Getenv("ASCII_MONGODB_SERVER")
-	port := os.Getenv("ASCII_MONGODB_PORT")
+func getConnectionUri(args map[string]string) string {
+	user := args["ASCII_MONGODB_USERNAME"]
+	password := args["ASCII_MONGODB_PASSWORD"]
+	server := args["ASCII_MONGODB_SERVER"]
+	port := args["ASCII_MONGODB_PORT"]
 
 	var connection strings.Builder
 	connection.WriteString("mongodb://")

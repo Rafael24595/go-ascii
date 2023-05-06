@@ -1,8 +1,6 @@
 package dependency_container
 
-import (
-	"go-ascii/src/infrastructure/repository"
-)
+import "go-ascii/src/infrastructure/repository"
 
 type DependencyContainer struct {
 	queryRepository repository.QueryRepository

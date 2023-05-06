@@ -3,6 +3,7 @@ package configurator
 var configuration *Configuration
 
 type Configuration struct {
+	args map[string]string
 	domain string
 	port string
 }
@@ -24,4 +25,12 @@ func (this Configuration) GetDomain() string {
 
 func (this Configuration) GetPort() string {
 	return this.port
+}
+
+func (this Configuration) GetArg(key string) string {
+	return this.args[key]
+}
+
+func (this Configuration) GetArgs() map[string]string {
+	return this.args
 }
