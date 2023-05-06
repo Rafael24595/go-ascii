@@ -14,6 +14,8 @@ import (
 	"go-ascii/src/domain/ascii"
 )
 
+const CommandRepositoryMongoKey = "CommandRepositoryMongo"
+
 type CommandRepositoryMongo struct {
 	queryRepository QueryRepository
 	collection mongo.Collection

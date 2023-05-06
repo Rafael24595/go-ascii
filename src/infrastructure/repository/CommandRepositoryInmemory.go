@@ -5,6 +5,8 @@ import (
 	"go-ascii/src/domain/ascii"
 )
 
+const CommandRepositoryInmemoryKey = "CommandRepositoryInmemory"
+
 type CommandRepositoryInmemory struct {
 	queryRepository QueryRepository
 }

@@ -4,6 +4,8 @@ import (
 	"go-ascii/src/domain/ascii"
 )
 
+const QueryRepositoryInmemoryKey = "QueryRepositoryInmemory"
+
 type QueryRepositoryInmemory struct {
 	storage map[string]ascii.ImageAscii
 }
