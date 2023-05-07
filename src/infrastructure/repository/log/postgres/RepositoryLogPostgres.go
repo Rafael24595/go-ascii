@@ -18,17 +18,13 @@ type RepositoryLogPostgres struct {
 
 func NewRepositoryLogPostgres(args map[string]string) repository.RepositoryLog {
 	connStr := getConnectionUri(args)
-	println(connStr)
 	dataBase, err := sql.Open("postgres", connStr)
 	if err != nil {
 		panic(err)
 	}
-	println("Ping")
-	//TODO: Investigate why Ping method calls localhost.
 	if err = dataBase.Ping(); err != nil {
 		panic(err)
 	}
-
 	return RepositoryLogPostgres{dataBase: dataBase}
 }
 

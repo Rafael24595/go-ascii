@@ -18,18 +18,13 @@ type LoggerPostgres struct {
 
 func NewLoggerPostgres(args map[string]string) logger.Logger {
 	connStr := getConnectionUri(args)
-	println(connStr)
 	dataBase, err := sql.Open("postgres", connStr)
-
 	if err != nil {
 		panic(err)
 	}
-	println("Ping")
-	//TODO: Investigate why Ping method calls localhost.
 	if err = dataBase.Ping(); err != nil {
 		panic(err)
 	}
-    
 	return LoggerPostgres{dataBase: dataBase}
 }
 
