@@ -41,7 +41,6 @@ func getConnectionUri(args map[string]string) string {
 	dataBase := args["ASCII_POSTGRES_DB"]
 
 	var connection strings.Builder
-	connection.WriteString("postgres://")
 	connection.WriteString(user)
 	connection.WriteString(":")
 	connection.WriteString(password)
