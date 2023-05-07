@@ -1,10 +1,9 @@
 package sources
 
 import (
-	"os"
 	"strconv"
 	"strings"
-	"go-ascii/src/infrastructure/input-output/sources/dictionary"
+	"go-ascii/src/infrastructure/input-output/sources/catalog"
 )
 
 func BuildBack() string {
@@ -24,12 +23,7 @@ func BuildLine() string {
 }
 
 func BuildReloadScript(ms int) string {
-	scriptByte, err := os.ReadFile(dictionary.GetSource(dictionary.AsciiReloadScript))
-	if(err != nil){
-		panic(err)
-	}
-
-	script := string(scriptByte)
+	script := view_catalog.GetSource(view_catalog.AsciiReloadScript)
 	script = strings.Replace(script, "$TIMEOUT", strconv.Itoa(ms), -1)
 
 	return script

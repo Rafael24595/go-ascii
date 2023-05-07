@@ -1,8 +1,11 @@
 package dependency_container
 
-import "go-ascii/src/infrastructure/repository"
+import (
+	"go-ascii/src/infrastructure/repository"
+)
 
 type DependencyContainer struct {
+	logRepository repository.RepositoryLog
 	queryRepository repository.QueryRepository
 	commandRepository repository.CommandRepository
 }
@@ -14,6 +17,17 @@ func GetInstance() *DependencyContainer {
 		dependencyContainer = &DependencyContainer{}
 	}
 	return dependencyContainer
+}
+
+func (this *DependencyContainer) GetLogRepository() repository.RepositoryLog {
+	if this.logRepository != nil {
+		return this.logRepository
+	}
+	panic("Dependency not found.")
+}
+
+func (this *DependencyContainer) SetLogRepository(dependency repository.RepositoryLog ) {
+	this.logRepository = dependency
 }
 
 func (this *DependencyContainer) GetQueryRepository() repository.QueryRepository {

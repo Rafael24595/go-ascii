@@ -4,15 +4,16 @@ import (
 	"os"
 	"syscall"
 	"os/signal"
-	"github.com/joho/godotenv"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"go-ascii/src/commons/configurator"
+	"go-ascii/src/commons/configurator/configuration"
 	"go-ascii/src/commons/dependency-container"
+	"go-ascii/src/commons/log"
 	"go-ascii/src/commons/temp-source"
 	"go-ascii/src/infrastructure/controller"
 	"go-ascii/src/infrastructure/controller/middleware"
 	"go-ascii/src/service"
-
 )
 
 func init() {
@@ -50,14 +51,20 @@ func serve() {
 	router.Use(middleware.Cors())
 	
 	dependencyContainer := dependency_container.GetInstance()
+	logRepository := dependencyContainer.GetLogRepository()
 	queryRepository := dependencyContainer.GetQueryRepository()
 	commandRepository:= dependencyContainer.GetCommandRepository()
+
+	serviceLog := service.NewServiceLog(logRepository)
+	controller.NewControllerLog(router, serviceLog)
 
 	serviceAscii := service.NewService(queryRepository, commandRepository)
 	controller.NewControllerRest(router, serviceAscii)
 	controller.NewControllerView(router, serviceAscii)
 
-	configuration := configurator.GetInstance()
+	configuration := configuration.GetInstance()
 
 	go router.Run(configuration.GetAddr())
+
+	log.Log("[INFO]", "Listening and serving HTTP on " + configuration.GetAddr() +".")
 }

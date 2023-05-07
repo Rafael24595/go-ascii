@@ -51,6 +51,10 @@ func getConnectionUri(args map[string]string) string {
 	return connection.String()
 }
 
+func (this CommandRepositoryMongo) DependencyName() string {
+	return CommandRepositoryMongoKey
+}
+
 func (this CommandRepositoryMongo) OnLoad() bool {
 	this.fillQuery()
 	return true

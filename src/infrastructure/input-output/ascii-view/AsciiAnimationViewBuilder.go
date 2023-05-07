@@ -1,11 +1,10 @@
 package ascii_view
 
 import (
-	"os"
 	"strconv"
 	"strings"
 	"go-ascii/src/commons/dto"
-	"go-ascii/src/infrastructure/input-output/sources/dictionary"
+	"go-ascii/src/infrastructure/input-output/sources/catalog"
 )
 
 type asciiAnimationViewBuilder struct {
@@ -42,26 +41,16 @@ func (this asciiAnimationViewBuilder) buildAnimationBody() string {
 }
 
 func (this asciiAnimationViewBuilder) buildDelayForm() string {
-	scriptByte, err := os.ReadFile(dictionary.GetSource(dictionary.AsciiGifDelay))
-	if(err != nil){
-		panic(err)
-	}
-
-	return string(scriptByte)
+	return view_catalog.GetSource(view_catalog.AsciiGifDelay)
 }
 
 func (this asciiAnimationViewBuilder) buildAnimationScript() string {
-	scriptByte, err := os.ReadFile(dictionary.GetSource(dictionary.AsciiGifScript))
-	if(err != nil){
-		panic(err)
-	}
-
 	delay := this.args["delay"]
 	if delay == "" {
 		delay = "250"
 	}
 	
-	script := string(scriptByte)
+	script := view_catalog.GetSource(view_catalog.AsciiGifScript)
 	script = strings.Replace(script, "$GIFS", "\"" + this.image.Name + "\"", -1)
 	script = strings.Replace(script, "$DELAY", "\"" + delay + "\"", -1)
 

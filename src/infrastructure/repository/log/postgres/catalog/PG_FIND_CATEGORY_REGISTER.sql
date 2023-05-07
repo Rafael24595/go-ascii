@@ -1,0 +1,3 @@
+SELECT * FROM register
+WHERE session_id_fk = $1
+AND category = $2

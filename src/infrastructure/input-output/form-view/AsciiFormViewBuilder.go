@@ -1,11 +1,10 @@
 package form_view
 
 import (
-	"os"
 	"strings"
 	"go-ascii/src/commons/constants/gray-scale"
 	"go-ascii/src/infrastructure/input-output/sources"
-	"go-ascii/src/infrastructure/input-output/sources/dictionary"
+	"go-ascii/src/infrastructure/input-output/sources/catalog"
 )
 
 type AsciiFormViewBuilder struct {
@@ -24,13 +23,7 @@ func (this AsciiFormViewBuilder) Build() string {
 }
 
 func (this AsciiFormViewBuilder) buildFormScript() string {
-	path := dictionary.GetSource(dictionary.AsciiPostForm)
-	scriptByte, err := os.ReadFile(path)
-	if(err != nil){
-		panic(err)
-	}
-
-	html := string(scriptByte)
+	html := view_catalog.GetSource(view_catalog.AsciiPostForm)
 	html = strings.Replace(html, "$GRAYSCALES", this.builGrayScaleOptions(), -1)
 
 	return html

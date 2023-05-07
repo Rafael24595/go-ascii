@@ -14,6 +14,10 @@ func NewQueryRepositoryInmemory() QueryRepository {
 	return QueryRepositoryInmemory{storage: map[string]ascii.ImageAscii{}}
 }
 
+func (this QueryRepositoryInmemory) DependencyName() string {
+	return QueryRepositoryInmemoryKey
+}
+
 func (this QueryRepositoryInmemory) OnLoad() bool {
 	return true
 }
@@ -22,7 +26,7 @@ func (this QueryRepositoryInmemory) OnExit() bool {
 	return true
 }
 
-func (this QueryRepositoryInmemory) FindAllAscii() (info []ascii.ImageInfo) {
+func (this QueryRepositoryInmemory) FindAll() (info []ascii.ImageInfo) {
 	info = make([]ascii.ImageInfo, 0, len(this.storage))
 	for key := range this.storage {
 		image := this.storage[key]
@@ -32,7 +36,7 @@ func (this QueryRepositoryInmemory) FindAllAscii() (info []ascii.ImageInfo) {
 	return
 }
 
-func (this QueryRepositoryInmemory) FindAscii(code string) ascii.ImageAscii {
+func (this QueryRepositoryInmemory) Find(code string) ascii.ImageAscii {
 	return this.storage[code]
 }
 

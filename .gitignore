@@ -4,4 +4,5 @@
 *.jpeg
 .temp
 .vscode
+postgres-data
 mongodb

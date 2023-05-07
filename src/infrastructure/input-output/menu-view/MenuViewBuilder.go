@@ -1,12 +1,11 @@
 package menu_view
 
 import (
-	"os"
 	"strings"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/infrastructure/input-output/sources"
-	"go-ascii/src/infrastructure/input-output/sources/dictionary"
+	"go-ascii/src/infrastructure/input-output/sources/catalog"
 )
 
 type MenuViewBuilder struct {
@@ -73,11 +72,5 @@ func (this MenuViewBuilder) buildForm() (body string) {
 }
 
 func (this MenuViewBuilder) buildDeleteScript() string {
-	path := dictionary.GetSource(dictionary.AsciiDeleteScript)
-	scriptByte, err := os.ReadFile(path)
-	if(err != nil){
-		panic(err)
-	}
-
-	return string(scriptByte)
+	return view_catalog.GetSource(view_catalog.AsciiDeleteScript)
 }

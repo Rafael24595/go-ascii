@@ -3,22 +3,22 @@ package configurator
 import (
 	"os"
 	"strings"
+	"go-ascii/src/commons/configurator/configuration"
 	"go-ascii/src/commons/dependency-container"
 	"go-ascii/src/commons/dependency-container/dependency-dictionary"
+	"go-ascii/src/commons/log"
 )
 
-func LoadConfiguration() (Configuration, dependency_container.DependencyContainer) {
+func LoadConfiguration() (configuration.Configuration, dependency_container.DependencyContainer) {
 	rawConfig := loadArgsFromEnv()
 	configuration := buildConfiguration(rawConfig)
 	dependencyContainer := buildDependencyContainer(rawConfig)
+	log.Log("[INFO]", "Configuration loaded successfully.")
 	return configuration, dependencyContainer
 }
 
-func buildConfiguration(rawConfig map[string]string) Configuration {
-	configuration := GetInstance()
-	configuration.args = rawConfig
-	configuration.domain = rawConfig["GO_ASCII_DOMAIN"]
-	configuration.port = rawConfig["GO_ASCII_PORT"]
+func buildConfiguration(rawConfig map[string]string) configuration.Configuration {
+	configuration := configuration.Instance(rawConfig)
 	return *configuration
 }
 
@@ -40,19 +40,29 @@ func loadArgsFromEnv() map[string]string {
 }
 
 func buildDependencyContainer(rawConfig map[string]string) dependency_container.DependencyContainer {
-	configuration := GetInstance()
+	configuration := configuration.GetInstance()
 	args := configuration.GetArgs()
 	dependencyContainer := dependency_container.GetInstance()
 
+	loggerKey := configuration.GetArg("GO_ASCII_LOGGER")
+	loggerDependency := dependency_dictionary.FindLoggerDependency(loggerKey, args)
+	log.Instance(loggerDependency)
+	loggerDependency.OnLoad()
+
+	log.Log("[INFO]", "Loading configuration...")
+
+	logRepositoryKey := configuration.GetArg("GO_ASCII_LOG_REPOSITORY")
+	logRepositoryDependency := dependency_dictionary.FindLogDependency(logRepositoryKey, args)
+	dependencyContainer.SetLogRepository(logRepositoryDependency)
+	
 	queryRepositoryKey := configuration.GetArg("GO_ASCII_QUERY_REPOSITORY")
-	queryRepository := dependency_dictionary.FindQueryDependency(queryRepositoryKey, args)
-	dependencyContainer.SetQueryRepository(queryRepository)
-
+	queryRepositoryDependency := dependency_dictionary.FindQueryDependency(queryRepositoryKey, args)
+	dependencyContainer.SetQueryRepository(queryRepositoryDependency)
+	
 	commandRepositoryKey := configuration.GetArg("GO_ASCII_COMMAND_REPOSITORY")
-	commandRepository := dependency_dictionary.FindCommandDependency(commandRepositoryKey, args)
-	dependencyContainer.SetCommandRepository(commandRepository)
-
-
+	commandRepositoryDependency := dependency_dictionary.FindCommandDependency(commandRepositoryKey, args)
+	dependencyContainer.SetCommandRepository(commandRepositoryDependency)
+	
 	dependencyContainer.OnLoad()
 
 	return *dependencyContainer

@@ -15,6 +15,10 @@ func NewCommandRepositoryInmemory(queryRepository QueryRepository) CommandReposi
 	return CommandRepositoryInmemory{queryRepository: queryRepository}
 }
 
+func (this CommandRepositoryInmemory) DependencyName() string {
+	return CommandRepositoryInmemoryKey
+}
+
 func (this CommandRepositoryInmemory) OnLoad() bool {
 	return true
 }

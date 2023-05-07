@@ -18,7 +18,7 @@ func NewService(queryRepository repository.QueryRepository, commandRepository re
 }
 
 func (this Service) FindAll() (response []dto.InfoResponse) {
-	info := this.queryRepository.FindAllAscii()
+	info := this.queryRepository.FindAll()
 	response = []dto.InfoResponse{}
 	for _, data := range info {
 		response = append(response, dto.InfoResponse{Code: data.GetCode(), Status: data.GetStatus(), Extension: data.GetExtension()})
@@ -27,7 +27,7 @@ func (this Service) FindAll() (response []dto.InfoResponse) {
 }
 
 func (this Service) Find(code string) dto.InfoAsciiResponse {
-	image := this.queryRepository.FindAscii(code)
+	image := this.queryRepository.Find(code)
 	height, width := image.GetDimensions()
 	response := dto.InfoAsciiResponse{Name: image.GetName(), Height: height, Width: width, Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
 	if response.Status == "" {
@@ -45,13 +45,13 @@ func (this Service) Insert(dto dto.ImageRequest) string {
 }
 
 func (this Service) Modify(code string) string {
-	image := this.queryRepository.FindAscii(code)
+	image := this.queryRepository.Find(code)
 	image.SetStatus(request_state.RESTORED)
 	return this.commandRepository.Modify(image)
 }
 
 func (this Service) Delete(code string) string {
-	image := this.queryRepository.FindAscii(code)
+	image := this.queryRepository.Find(code)
 	image.SetStatus(request_state.DELETED)
 	return this.commandRepository.Delete(image)
 }
