@@ -22,9 +22,11 @@ func NewRepositoryLogPostgres(args map[string]string) repository.RepositoryLog {
 	if err != nil {
 		panic(err)
 	}
-	if err = dataBase.Ping(); err != nil {
+	
+	//TODO: Investigate why Ping method calls localhost.
+	/*if err = dataBase.Ping(); err != nil {
 		panic(err)
-	}
+	}*/
 
 	return RepositoryLogPostgres{dataBase: dataBase}
 }

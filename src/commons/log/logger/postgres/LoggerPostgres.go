@@ -2,7 +2,6 @@ package logger_postgres
 
 import (
 	"database/sql"
-	"fmt"
 	"go-ascii/src/commons/configurator/configuration"
 	"go-ascii/src/commons/log/event"
 	"go-ascii/src/commons/log/logger"
@@ -21,14 +20,14 @@ type LoggerPostgres struct {
 func NewLoggerPostgres(args map[string]string) logger.Logger {
 	connStr := getConnectionUri(args)
 	dataBase, err := sql.Open("postgres", connStr)
+
 	if err != nil {
 		panic(err)
 	}
-	if err = dataBase.Ping(); err != nil {
+	//TODO: Investigate why Ping method calls localhost.
+	/*if err = dataBase.Ping(); err != nil {
 		panic(err)
-	}
-
-	fmt.Println("The database is connected")
+	}*/
     
 	return LoggerPostgres{dataBase: dataBase}
 }
