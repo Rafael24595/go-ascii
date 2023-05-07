@@ -1,6 +1,7 @@
 version: "3.3"
 services:
   web:
+    container_name: goascii
     image: go-ascii
     build: .
     restart: always
@@ -9,12 +10,19 @@ services:
     environment:
       - GO_ASCII_DOMAIN=0.0.0.0
       - GO_ASCII_PORT=8080
+      - GO_ASCII_LOGGER=LoggerPostgres
+      - GO_ASCII_LOG_REPOSITORY=RepositoryLogPostgres
       - GO_ASCII_QUERY_REPOSITORY=QueryRepositoryInmemory
       - GO_ASCII_COMMAND_REPOSITORY=CommandRepositoryMongo
       - ASCII_MONGODB_USERNAME=root
       - ASCII_MONGODB_PASSWORD=example
       - ASCII_MONGODB_SERVER=mongodb
       - ASCII_MONGODB_PORT=27017
+      - ASCII_POSTGRES_USERNAME=postgres
+      - ASCII_POSTGRES_PASSWORD=postgres
+      - ASCII_POSTGRES_SERVER=postgres
+      - ASCII_POSTGRES_PORT=5438
+      - ASCII_POSTGRES_DB=logdb
   mongodb:
     container_name: mongodb
     image: mongo  
@@ -26,6 +34,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=example
   mongo-express:
+    container_name: mongoexpress
     image: mongo-express
     restart: always
     ports:
@@ -36,3 +45,19 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=example
     depends_on:
       - mongodb
+  postgres:
+    container_name: postgres
+    image: postgres:10.5
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5438:5432'
+    volumes: 
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
