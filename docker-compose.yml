@@ -25,6 +25,7 @@ services:
       - ASCII_POSTGRES_DB=logdb
     depends_on:
       - postgres
+      - mongodb
   mongodb:
     container_name: mongodb
     image: mongo  
