@@ -2,13 +2,11 @@ package logger_postgres
 
 import (
 	"database/sql"
-	"fmt"
 	"go-ascii/src/commons/configurator/configuration"
 	"go-ascii/src/commons/log/event"
 	"go-ascii/src/commons/log/logger"
 	"go-ascii/src/commons/log/logger/postgres/catalog"
-	//"strings"
-
+	"strings"
 	_ "github.com/lib/pq"
 )
 
@@ -20,11 +18,13 @@ type LoggerPostgres struct {
 
 func NewLoggerPostgres(args map[string]string) logger.Logger {
 	connStr := getConnectionUri(args)
+	println(connStr)
 	dataBase, err := sql.Open("postgres", connStr)
 
 	if err != nil {
 		panic(err)
 	}
+	println("Ping")
 	//TODO: Investigate why Ping method calls localhost.
 	if err = dataBase.Ping(); err != nil {
 		panic(err)
@@ -40,7 +40,7 @@ func getConnectionUri(args map[string]string) string {
 	port := args["ASCII_POSTGRES_PORT"]
 	dataBase := args["ASCII_POSTGRES_DB"]
 
-	/*var connection strings.Builder
+	var connection strings.Builder
 	connection.WriteString("postgres://")
 	connection.WriteString(user)
 	connection.WriteString(":")
@@ -51,8 +51,8 @@ func getConnectionUri(args map[string]string) string {
 	connection.WriteString(port)
 	connection.WriteString("/")
 	connection.WriteString(dataBase)
-	connection.WriteString("?sslmode=disable")*/
-	return fmt.Sprintf("host='%s' port=%s user='%s' password='%s' dbname='%s' sslmode=disable", server, port, user, password, dataBase)
+	connection.WriteString("?sslmode=disable")
+	return connection.String()
 
 }
 

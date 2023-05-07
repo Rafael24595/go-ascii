@@ -2,13 +2,12 @@ package postgres_repository
 
 import (
 	"database/sql"
-	"fmt"
 	"go-ascii/src/commons/configurator/configuration"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/commons/log/event"
 	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/infrastructure/repository/log/postgres/catalog"
-	//"strings"
+	"strings"
 )
 
 const RepositoryLogPostgresKey = "RepositoryLogPostgres"
@@ -19,11 +18,12 @@ type RepositoryLogPostgres struct {
 
 func NewRepositoryLogPostgres(args map[string]string) repository.RepositoryLog {
 	connStr := getConnectionUri(args)
+	println(connStr)
 	dataBase, err := sql.Open("postgres", connStr)
 	if err != nil {
 		panic(err)
 	}
-	
+	println("Ping")
 	//TODO: Investigate why Ping method calls localhost.
 	if err = dataBase.Ping(); err != nil {
 		panic(err)
@@ -39,7 +39,7 @@ func getConnectionUri(args map[string]string) string {
 	port := args["ASCII_POSTGRES_PORT"]
 	dataBase := args["ASCII_POSTGRES_DB"]
 
-	/*var connection strings.Builder
+	var connection strings.Builder
 	connection.WriteString("postgres://")
 	connection.WriteString(user)
 	connection.WriteString(":")
@@ -50,8 +50,8 @@ func getConnectionUri(args map[string]string) string {
 	connection.WriteString(port)
 	connection.WriteString("/")
 	connection.WriteString(dataBase)
-	connection.WriteString("?sslmode=disable")*/
-	return fmt.Sprintf("host='%s' port=%s user='%s' password='%s' dbname='%s' sslmode=disable", server, port, user, password, dataBase)
+	connection.WriteString("?sslmode=disable")
+	return connection.String()
 }
 
 func (this RepositoryLogPostgres) DependencyName() string {
