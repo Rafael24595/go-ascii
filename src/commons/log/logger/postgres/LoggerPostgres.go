@@ -52,7 +52,7 @@ func getConnectionUri(args map[string]string) string {
 	connection.WriteString("/")
 	connection.WriteString(dataBase)
 	connection.WriteString("?sslmode=disable")*/
-	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", server, port, user, password, dataBase)
+	return fmt.Sprintf("host='%s' port=%s user='%s' password='%s' dbname='%s' sslmode=disable", server, port, user, password, dataBase)
 
 }
 
