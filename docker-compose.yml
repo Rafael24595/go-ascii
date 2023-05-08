@@ -10,6 +10,7 @@ services:
     environment:
       - GO_ASCII_DOMAIN=0.0.0.0
       - GO_ASCII_PORT=8080
+      - GO_ASCII_DEBUG=true
       - GO_ASCII_LOGGER=LoggerPostgres
       - GO_ASCII_LOG_REPOSITORY=RepositoryLogPostgres
       - GO_ASCII_QUERY_REPOSITORY=QueryRepositoryInmemory
