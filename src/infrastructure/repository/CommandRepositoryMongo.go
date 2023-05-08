@@ -72,7 +72,8 @@ func (this CommandRepositoryMongo) fillQuery() {
             panic(err)
         }
 
-		image := ascii.NewImageAscii(dto.Name, dto.Extension, dto.Status, this.decodeFrames(dto))
+		timestamp := time.Unix(0, int64(dto.Timestamp) * int64(time.Millisecond))
+		image := ascii.NewImageAscii(dto.Name, dto.Extension, dto.Status, timestamp, this.decodeFrames(dto))
 
         this.ToQuery(image)
     }
@@ -91,7 +92,7 @@ func (this CommandRepositoryMongo) cleanDeleted() {
 }
 
 func (this *CommandRepositoryMongo) Insert(image ascii.ImageAscii) string {
-	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), request_state.STORED, this.encodeFrames(image))
+	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), request_state.STORED, image.GetTimestamp().UnixMilli(), this.encodeFrames(image))
 	_, err := this.collection.InsertOne(context.Background(), response)
 	if err != nil { 
 		panic(err)
@@ -101,7 +102,7 @@ func (this *CommandRepositoryMongo) Insert(image ascii.ImageAscii) string {
 }
 
 func (this *CommandRepositoryMongo) Modify(image ascii.ImageAscii) string {
-	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), image.GetStatus(), this.encodeFrames(image))
+	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), image.GetStatus(), image.GetTimestamp().UnixMilli(), this.encodeFrames(image))
 	filter := bson.M{"name": image.GetName()}
 	_, err := this.collection.ReplaceOne(context.Background(), filter, response)
 	if err != nil { 
@@ -112,7 +113,7 @@ func (this *CommandRepositoryMongo) Modify(image ascii.ImageAscii) string {
 }
 
 func (this *CommandRepositoryMongo) Delete(image ascii.ImageAscii) string {
-	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), image.GetStatus(), this.encodeFrames(image))
+	response := dto.NewAsciiResponse(image.GetName(), image.GetExtension(), image.GetStatus(), image.GetTimestamp().UnixMilli(), this.encodeFrames(image))
 	filter := bson.M{"name": image.GetName()}
 	_, err := this.collection.ReplaceOne(context.Background(), filter, response)
 	if err != nil { 

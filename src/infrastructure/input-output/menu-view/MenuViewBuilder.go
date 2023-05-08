@@ -1,11 +1,12 @@
 package menu_view
 
 import (
-	"strings"
+	"go-ascii/src/commons/configurator/configuration"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
-	"go-ascii/src/infrastructure/input-output/sources"
-	"go-ascii/src/infrastructure/input-output/sources/catalog"
+	"go-ascii/src/infrastructure/input-output"
+	"go-ascii/src/infrastructure/input-output/catalog"
+	"strings"
 )
 
 type MenuViewBuilder struct {
@@ -20,7 +21,7 @@ func (this MenuViewBuilder) Build() (body string) {
 	var html strings.Builder
 
 	html.WriteString(this.buildForm())
-	html.WriteString(sources.BuildLine())
+	html.WriteString(input_output.BuildLine())
 
 	if(len(this.sources) == 0){
 		html.WriteString("<p>There are no data sources to show.</p>")
@@ -62,11 +63,19 @@ func (this MenuViewBuilder) Build() (body string) {
 }
 
 func (this MenuViewBuilder) buildForm() (body string) {
+	configuration := configuration.GetInstance()
+
 	var html strings.Builder
 
-	uri := "/api/view/form"
-	html.WriteString(">>> Upload file: ")
-	html.WriteString("<a href=\"" + uri + "\">" + uri + "</a>")
+	uriForm := "/api/view/form"
+	html.WriteString("<span>>>> Upload file: ")
+	html.WriteString("<a href=\"" + uriForm + "\">" + uriForm + "</a></span>")
+
+	if configuration.IsDebugSession() {
+		logUri := "/api/view/log"
+		html.WriteString("<span style=\"float:right;\">>>> :Session log: ")
+		html.WriteString("<a href=\"" + logUri + "\">" + logUri + "</a></span>")
+	}
 	
 	return html.String()
 }

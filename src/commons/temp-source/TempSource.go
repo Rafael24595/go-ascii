@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"encoding/base64"
 	"golang.org/x/exp/slices"
+	"go-ascii/src/commons/dependency-container"
 	"go-ascii/src/commons/utils"
 )
 
@@ -23,12 +24,7 @@ func Base64ToSource(encode string, code string) (path string) {
 		panic(err)
 	}
 
-	name := buildName(code)
-
-	file, err := os.CreateTemp(".temp", name)
-	if err != nil {
-		panic(err)
-	}
+	file := createTemp(code)
 	
 	if _, err := file.Write(dec); err != nil {
 		panic(err)
@@ -45,7 +41,34 @@ func Base64ToSource(encode string, code string) (path string) {
 	return
 }
 
-func buildName(code string) (name string) {
+func createTemp(code string) *os.File {
+	name := buildFileName(code)
+
+	file, err := os.CreateTemp(".temp", name)
+	if err != nil {
+		panic(err)
+	}
+	path := filepath.ToSlash(file.Name())
+	fileName := filepath.Base(path)
+	if isCodePersisted(fileName) {
+		err := os.Remove(path)
+		if err != nil {
+			panic(err)
+		}
+		return createTemp(code)
+	}
+	return file
+}
+
+
+func isCodePersisted(code string) bool {
+	depencencyContainer := dependency_container.GetInstance()
+	queryRepository := depencencyContainer.GetQueryRepository()
+	image := queryRepository.Find(code)
+	return image.GetStatus() != ""
+}
+
+func buildFileName(code string) (name string) {
 	code = strings.TrimSpace(code)
 	name = "Source-"
 	if(code != ""){

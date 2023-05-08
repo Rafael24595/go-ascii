@@ -1,10 +1,10 @@
 package form_view
 
 import (
-	"strings"
 	"go-ascii/src/commons/constants/gray-scale"
-	"go-ascii/src/infrastructure/input-output/sources"
-	"go-ascii/src/infrastructure/input-output/sources/catalog"
+	"go-ascii/src/infrastructure/input-output"
+	"go-ascii/src/infrastructure/input-output/catalog"
+	"strings"
 )
 
 type AsciiFormViewBuilder struct {
@@ -16,8 +16,8 @@ func NewAsciiAsciiFormViewBuilder() AsciiFormViewBuilder {
 
 func (this AsciiFormViewBuilder) Build() string {
 	var html strings.Builder
-	html.WriteString(sources.BuildBack())
-	html.WriteString(sources.BuildLine())
+	html.WriteString(input_output.BuildBack())
+	html.WriteString(input_output.BuildLine())
 	html.WriteString(this.buildFormScript())
 	return html.String()
 }

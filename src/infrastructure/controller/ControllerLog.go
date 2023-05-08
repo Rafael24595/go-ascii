@@ -3,29 +3,29 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"go-ascii/src/service"
+	"go-ascii/src/commons/dto"
+	"go-ascii/src/commons/configurator/configuration"
 )
 
 type ControllerLog struct {
-	Service service.ServiceLog
-	RouterGroup gin.RouterGroup
+	service service.ServiceLog
+	routerGroup gin.RouterGroup
 }
 
 func NewControllerLog(router *gin.Engine, service service.ServiceLog) (controller ControllerLog) {
-	controller = ControllerLog{Service: service, RouterGroup: *router.Group("/api")}
-	controller.RouterGroup.GET("/log", controller.findAll)
-	//controller.RouterGroup.GET("/log/:category", controller.find)
+	configuration := configuration.GetInstance()
+
+	controller = ControllerLog{service: service, routerGroup: *router.Group("/api")}
+	if configuration.IsDebugSession() {
+		controller.routerGroup.GET("/log", controller.filterLog)
+	}
 	return
 }
 
-func (this ControllerLog) findAll(c *gin.Context, ) {
+func (this ControllerLog) filterLog(c *gin.Context) {
+	dto := dto.NewLogParamsRequest(c.Query("category"), c.Query("from"), c.Query("to"))
 	body := gin.H{
-		"message": this.Service.FindAll(),
+		"message": this.service.FindAll(dto),
 	}
 	c.JSON(200, body)
-}
-
-func (this ControllerLog) find(c *gin.Context) {
-	code := c.Param("code")
-	image:= this.Service.Find(code)
-	c.JSON(200, &image)
 }

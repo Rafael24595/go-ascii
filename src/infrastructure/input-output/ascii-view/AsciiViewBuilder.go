@@ -3,10 +3,10 @@ package ascii_view
 import (
 	"strconv"
 	"strings"
-	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
-	"go-ascii/src/infrastructure/input-output/sources"
-	"go-ascii/src/infrastructure/input-output/sources/catalog"
+	"go-ascii/src/infrastructure/input-output"
+	"go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/infrastructure/input-output/catalog"
 )
 
 type AsciiViewBuilder struct {
@@ -21,9 +21,9 @@ func NewAsciiViewBuilder(image dto.InfoAsciiResponse, args map[string]string) As
 func (this AsciiViewBuilder) Build() (body string) {
 	var html strings.Builder
 
-	html.WriteString(sources.BuildBack())
+	html.WriteString(input_output.BuildBack())
 
-	html.WriteString(sources.BuildLine())
+	html.WriteString(input_output.BuildLine())
 
 	html.WriteString(this.buildCode())
 	html.WriteString(this.buildType())
@@ -47,7 +47,7 @@ func (this AsciiViewBuilder) Build() (body string) {
 	}
 
 	if this.image.Status == request_state.PROCESS || this.image.Status == request_state.PENDING {
-		html.WriteString(sources.BuildReloadScript(3000))
+		html.WriteString(input_output.BuildReloadScript(3000))
 		html.WriteString("<p><b>*** This page will be reloaded in a few seconds, please wait. ***</b></p>")
 	} 
 

@@ -45,8 +45,22 @@ func RemoveIndex[T interface{}](s []T, index int) []T{
 }
 
 func ParseFloat64(number string) (float64, error) {
+	if number == "" {
+		return 0, nil
+	}
 	if s, err := strconv.ParseFloat(number, 64); err == nil {
 		return s, nil
+	} else {
+		return 0, err
+	}
+}
+
+func ParseInt64(number string) (int64, error) {
+	if number == "" {
+		return 0, nil
+	}
+	if s, err := strconv.ParseUint(number, 10, 64); err == nil {
+		return int64(s), nil
 	} else {
 		return 0, err
 	}

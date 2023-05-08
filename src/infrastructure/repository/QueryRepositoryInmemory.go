@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"sort"
 	"go-ascii/src/domain/ascii"
 )
 
@@ -30,9 +31,12 @@ func (this QueryRepositoryInmemory) FindAll() (info []ascii.ImageInfo) {
 	info = make([]ascii.ImageInfo, 0, len(this.storage))
 	for key := range this.storage {
 		image := this.storage[key]
-		data := ascii.NewImageInfo(image.GetName(), image.GetStatus(), image.GetExtension())
+		data := ascii.NewImageInfo(image.GetName(), image.GetStatus(), image.GetTimestamp(), image.GetExtension())
 		info = append(info, data)
 	}
+	sort.Slice(info[:], func(i, j int) bool {
+		return info[i].GetTimestamp().UnixMicro() < info[j].GetTimestamp().UnixMicro()
+	})
 	return
 }
 

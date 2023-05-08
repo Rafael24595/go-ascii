@@ -1,9 +1,9 @@
-package sources
+package input_output
 
 import (
 	"strconv"
 	"strings"
-	"go-ascii/src/infrastructure/input-output/sources/catalog"
+	"go-ascii/src/infrastructure/input-output/catalog"
 )
 
 func BuildBack() string {
@@ -27,4 +27,8 @@ func BuildReloadScript(ms int) string {
 	script = strings.Replace(script, "$TIMEOUT", strconv.Itoa(ms), -1)
 
 	return script
+}
+
+func BuildTableStyles() string {
+	return view_catalog.GetSource(view_catalog.AsciiTableStyle)
 }

@@ -58,13 +58,13 @@ func serve() {
 	serviceLog := service.NewServiceLog(logRepository)
 	controller.NewControllerLog(router, serviceLog)
 
-	serviceAscii := service.NewService(queryRepository, commandRepository)
+	serviceAscii := service.NewServiceAscii(queryRepository, commandRepository)
 	controller.NewControllerRest(router, serviceAscii)
-	controller.NewControllerView(router, serviceAscii)
+	controller.NewControllerView(router, serviceAscii, serviceLog)
 
 	configuration := configuration.GetInstance()
 
 	go router.Run(configuration.GetAddr())
-
-	log.Log("[INFO]", "Listening and serving HTTP on " + configuration.GetAddr() +".")
+	
+	log.Log("INFO", "Listening and serving HTTP on " + configuration.GetAddr() +".")
 }

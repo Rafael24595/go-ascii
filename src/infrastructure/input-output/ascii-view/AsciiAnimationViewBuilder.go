@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 	"go-ascii/src/commons/dto"
-	"go-ascii/src/infrastructure/input-output/sources/catalog"
+	"go-ascii/src/infrastructure/input-output/catalog"
 )
 
 type asciiAnimationViewBuilder struct {

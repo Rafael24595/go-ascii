@@ -1,6 +1,7 @@
 package ascii
 
 import (
+	"time"
 	"strings"
 )
 
@@ -8,11 +9,12 @@ type ImageAscii struct {
 	name      string
 	extension string
 	status    string
+	timestamp time.Time
 	frames    []string
 }
 
-func NewImageAscii(name string, extension string, status string, frames []string) ImageAscii {
-	return ImageAscii{name: name, extension: extension, status: status, frames: frames}
+func NewImageAscii(name string, extension string, status string, timestamp time.Time, frames []string) ImageAscii {
+	return ImageAscii{name: name, extension: extension, status: status, timestamp: timestamp, frames: frames}
 }
 
 func (this *ImageAscii) GetName() string {
@@ -27,6 +29,10 @@ func (this *ImageAscii) GetStatus() string {
 	return this.status
 }
 
+func (this *ImageAscii) GetTimestamp() time.Time {
+	return this.timestamp
+}
+
 func (this *ImageAscii) GetFrames() []string {
 	return this.frames
 }
@@ -37,6 +43,10 @@ func (this *ImageAscii) SetName(name string) {
 
 func (this *ImageAscii) SetExtension(extension string) {
 	this.extension = extension
+}
+
+func (this *ImageAscii) SetTimestamp(timestamp time.Time) {
+	this.timestamp = timestamp
 }
 
 func (this *ImageAscii) SetFrames(frames []string) {

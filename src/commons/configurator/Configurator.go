@@ -13,7 +13,7 @@ func LoadConfiguration() (configuration.Configuration, dependency_container.Depe
 	rawConfig := loadArgsFromEnv()
 	configuration := buildConfiguration(rawConfig)
 	dependencyContainer := buildDependencyContainer(rawConfig)
-	log.Log("[INFO]", "Configuration loaded successfully.")
+	log.Log("INFO", "Configuration loaded successfully.")
 	return configuration, dependencyContainer
 }
 
@@ -49,7 +49,7 @@ func buildDependencyContainer(rawConfig map[string]string) dependency_container.
 	log.Instance(loggerDependency)
 	loggerDependency.OnLoad()
 
-	log.Log("[INFO]", "Loading configuration...")
+	log.Log("INFO", "Loading configuration...")
 
 	logRepositoryKey := configuration.GetArg("GO_ASCII_LOG_REPOSITORY")
 	logRepositoryDependency := dependency_dictionary.FindLogDependency(logRepositoryKey, args)

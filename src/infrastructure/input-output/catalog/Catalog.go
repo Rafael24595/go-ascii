@@ -5,13 +5,14 @@ import "os"
 type SourceDirectory string
 
 const (
-	directory          string          = "src/infrastructure/input-output/sources/"
+	directory          string          = "src/infrastructure/input-output/catalog/"
 	AsciiDeleteScript  SourceDirectory = "AsciiDeleteScript.html"
 	AsciiGifDelay      SourceDirectory = "AsciiGifDelay.html"
 	AsciiGifScript     SourceDirectory = "AsciiGifScript.html"
 	AsciiPostForm      SourceDirectory = "AsciiPostForm.html"
 	AsciiReloadScript  SourceDirectory = "AsciiReloadScript.html"
 	AsciiRestoreScript SourceDirectory = "AsciiRestoreScript.html"
+	AsciiTableStyle SourceDirectory = "AsciiTableStyle.html"
 )
 
 func GetSource(code SourceDirectory) string {

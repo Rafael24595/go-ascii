@@ -57,5 +57,5 @@ func FindCommandDependency(code string, args map[string]string) (dependency repo
 }
 
 func logDependency(dependency commons.Dependency) {
-	log.Log("[INFO]", "Loaded dependency '" + dependency.DependencyName() + "'.")
+	log.Log("INFO", "Loaded dependency '" + dependency.DependencyName() + "'.")
 }

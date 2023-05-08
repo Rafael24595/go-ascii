@@ -1,6 +1,10 @@
 package builder
 
 import (
+	"time"
+	"image"
+	"image/draw"
+	"image/color"
 	"go-ascii/src/commons/constants/gray-scale"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/utils"
@@ -8,9 +12,6 @@ import (
 	"go-ascii/src/domain/ascii"
 	"go-ascii/src/domain/ascii/builder/collection"
 	"go-ascii/src/domain/ascii/builder/scale"
-	"image"
-	"image/color"
-	"image/draw"
 )
 
 const DEFAULT_WIDTH_CORRECTION = 0.475
@@ -37,7 +38,7 @@ func NewBuilderAscii(event ascii.QueueEvent) (builder BuilderAscii, err error) {
 func (this BuilderAscii) Build() ascii.ImageAscii {
 	code := this.event.GetCode()
 	extension := utils.FileExtensionByPath(this.event.GetPath())
-	imageAscii := ascii.NewImageAscii(code, extension, request_state.SUCCES, []string{})
+	imageAscii := ascii.NewImageAscii(code, extension, request_state.SUCCES, time.Now(), []string{})
 	for i := range this.images.GetImages() {
 		frame := this.buildFrame(i)
 		imageAscii.AppendFrame(frame)
