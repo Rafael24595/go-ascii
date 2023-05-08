@@ -12,7 +12,7 @@ services:
       - GO_ASCII_PORT=8080
       - GO_ASCII_DEBUG=true
       - GO_ASCII_LOGGER=LoggerPostgres
-      - GO_ASCII_LOG_REPOSITORY=RepositoryLogPostgres
+      - GO_ASCII_LOG_REPOSITORY=LogRepositoryPostgres
       - GO_ASCII_QUERY_REPOSITORY=QueryRepositoryInmemory
       - GO_ASCII_COMMAND_REPOSITORY=CommandRepositoryMongo
       - ASCII_MONGODB_USERNAME=root

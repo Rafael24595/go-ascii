@@ -12,8 +12,9 @@ CREATE TABLE IF NOT EXISTS register (
   register_id SERIAL NOT NULL,
   session_id_fk varchar(50) NOT NULL,
   category varchar(30) NOT NULL,
+  family varchar(30) NOT NULL,
   message varchar(500) NOT NULL,
-  timestamp TIMESTAMP,
+  timestamp BIGINT,
   PRIMARY KEY (register_id),
   CONSTRAINT session_id_fk
       FOREIGN KEY(session_id_fk) 
