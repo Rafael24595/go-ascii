@@ -11,10 +11,8 @@ import (
 	"go-ascii/src/commons/utils"
 )
 
-/*TODO: To static struct*/
-
-var temps = []string{}
 const directory = ".temp"
+var temps = []string{}
 
 func Base64ToSource(encode string, code string) (path string) {
 	createTempDirIfNotExists()
@@ -25,16 +23,14 @@ func Base64ToSource(encode string, code string) (path string) {
 	}
 
 	file := createTemp(code)
+	defer file.Close()
 	
 	if _, err := file.Write(dec); err != nil {
 		panic(err)
 	}
-
 	if err := file.Sync(); err != nil {
 		panic(err)
 	}
-
-	defer file.Close()
 
 	path = filepath.ToSlash(file.Name())
 	temps = append(temps, path)
@@ -49,8 +45,8 @@ func createTemp(code string) *os.File {
 		panic(err)
 	}
 	path := filepath.ToSlash(file.Name())
-	fileName := filepath.Base(path)
-	if isCodePersisted(fileName) {
+	fileCode := filepath.Base(path)
+	if isCodePersisted(fileCode) {
 		err := os.Remove(path)
 		if err != nil {
 			panic(err)
@@ -58,14 +54,6 @@ func createTemp(code string) *os.File {
 		return createTemp(code)
 	}
 	return file
-}
-
-
-func isCodePersisted(code string) bool {
-	depencencyContainer := dependency_container.GetInstance()
-	queryRepository := depencencyContainer.GetQueryRepository()
-	image := queryRepository.Find(code)
-	return image.GetStatus() != ""
 }
 
 func buildFileName(code string) (name string) {
@@ -77,9 +65,16 @@ func buildFileName(code string) (name string) {
 	return
 }
 
+func isCodePersisted(code string) bool {
+	depencencyContainer := dependency_container.GetInstance()
+	queryRepository := depencencyContainer.GetQueryRepository()
+	image := queryRepository.Find(code)
+	return image.GetStatus() != ""
+}
+
 func createTempDirIfNotExists() bool {
-	if _, err := os.Stat(".temp"); os.IsNotExist(err) {
-		err := os.Mkdir(".temp", os.ModePerm)
+	if _, err := os.Stat(directory); os.IsNotExist(err) {
+		err := os.Mkdir(directory, os.ModePerm)
 		if err != nil {
 			panic(err)
 		}

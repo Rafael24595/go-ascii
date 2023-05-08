@@ -8,7 +8,7 @@ import (
 
 type LogFilter struct {
 	category string
-	from     time.Time
+	from time.Time
 	to time.Time
 }
 
