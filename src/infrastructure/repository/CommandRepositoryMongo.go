@@ -2,6 +2,7 @@ package repository
 
 import (
 	"time"
+	"strconv"
 	"strings"
 	"context"
 	"encoding/base64"
@@ -10,7 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
+	"go-ascii/src/commons/log"
 	"go-ascii/src/domain/ascii"
+	"go-ascii/src/commons/constants/log-categories"
 )
 
 const CommandRepositoryMongoKey = "CommandRepositoryMongo"
@@ -56,15 +59,19 @@ func (this CommandRepositoryMongo) DependencyName() string {
 }
 
 func (this CommandRepositoryMongo) OnLoad() bool {
+	log.Log(log_categories.INFO, "Initializing \"" + this.DependencyName() + "\" dependency...")
 	this.fillQuery()
+	log.Log(log_categories.INFO, "\"" + this.DependencyName() + "\" dependency was initialized successfully.")
 	return true
 }
 
 func (this CommandRepositoryMongo) fillQuery() {
+	log.Log(log_categories.INFO, "[" + this.DependencyName() + "] => Loading registries from data base...")
 	cursor, err := this.collection.Find(context.TODO(), bson.M{"status": bson.M{ "$ne": request_state.DELETED }})
 	if err != nil {
         panic(err)
     }
+	cont := 0
 	for cursor.Next(context.TODO()) {
         var dto dto.AsciiResponse
         err := cursor.Decode(&dto)
@@ -76,11 +83,15 @@ func (this CommandRepositoryMongo) fillQuery() {
 		image := ascii.NewImageAscii(dto.Name, dto.Extension, dto.Status, timestamp, this.decodeFrames(dto))
 
         this.ToQuery(image)
+		cont++
     }
+	log.Log(log_categories.INFO, "[" + this.DependencyName() + "] => Finished: " + strconv.Itoa(cont) + " registries loaded.")
 }
 
 func (this CommandRepositoryMongo) OnExit() bool {
+	log.Log(log_categories.INFO, "Exiting \"" + this.DependencyName() + "\" dependency...")
 	this.cleanDeleted()
+	log.Log(log_categories.INFO, "\"" + this.DependencyName() + "\" dependency was exited successfully.")
 	return true
 }
 
@@ -89,6 +100,7 @@ func (this CommandRepositoryMongo) cleanDeleted() {
 	if err != nil {
         panic(err)
     }
+	log.Log(log_categories.INFO, "Registries with \"" + request_state.DELETED + "\" status stored in database was deleted succesfully.")
 }
 
 func (this *CommandRepositoryMongo) Insert(image ascii.ImageAscii) string {

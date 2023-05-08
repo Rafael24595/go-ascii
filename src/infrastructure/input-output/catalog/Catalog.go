@@ -9,6 +9,7 @@ const (
 	AsciiDeleteScript  SourceDirectory = "AsciiDeleteScript.html"
 	AsciiGifDelay      SourceDirectory = "AsciiGifDelay.html"
 	AsciiGifScript     SourceDirectory = "AsciiGifScript.html"
+	AsciiLogForm     SourceDirectory = "AsciiLogForm.html"
 	AsciiPostForm      SourceDirectory = "AsciiPostForm.html"
 	AsciiReloadScript  SourceDirectory = "AsciiReloadScript.html"
 	AsciiRestoreScript SourceDirectory = "AsciiRestoreScript.html"

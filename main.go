@@ -14,6 +14,7 @@ import (
 	"go-ascii/src/infrastructure/controller"
 	"go-ascii/src/infrastructure/controller/middleware"
 	"go-ascii/src/service"
+	"go-ascii/src/commons/constants/log-categories"
 )
 
 func init() {
@@ -66,5 +67,5 @@ func serve() {
 
 	go router.Run(configuration.GetAddr())
 	
-	log.Log("INFO", "Listening and serving HTTP on " + configuration.GetAddr() +".")
+	log.LogFam(log_categories.INFO, controller.Family, "Listening and serving HTTP on " + configuration.GetAddr() +".")
 }

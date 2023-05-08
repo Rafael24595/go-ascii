@@ -7,7 +7,9 @@ import (
 	"path/filepath"
 	"encoding/base64"
 	"golang.org/x/exp/slices"
+	"go-ascii/src/commons/constants/log-categories"
 	"go-ascii/src/commons/dependency-container"
+	"go-ascii/src/commons/log"
 	"go-ascii/src/commons/utils"
 )
 
@@ -15,7 +17,7 @@ const directory = ".temp"
 var temps = []string{}
 
 func Base64ToSource(encode string, code string) (path string) {
-	createTempDirIfNotExists()
+	_ = createTempDirIfNotExists()
 
 	dec, err := base64.StdEncoding.DecodeString(encode)
 	if err != nil {
@@ -40,17 +42,16 @@ func Base64ToSource(encode string, code string) (path string) {
 func createTemp(code string) *os.File {
 	name := buildFileName(code)
 
-	file, err := os.CreateTemp(".temp", name)
+	file, err := os.CreateTemp(directory, name)
 	if err != nil {
 		panic(err)
 	}
 	path := filepath.ToSlash(file.Name())
 	fileCode := filepath.Base(path)
+	log.Log(log_categories.INFO, "Temporal file \"" + fileCode + "\" created.")
 	if isCodePersisted(fileCode) {
-		err := os.Remove(path)
-		if err != nil {
-			panic(err)
-		}
+		log.Log(log_categories.WARNING, "Registry \"" + fileCode + "\" already exists. Recreating it with another code...")
+		removeSourceFile(path)
 		return createTemp(code)
 	}
 	return file
@@ -84,11 +85,9 @@ func createTempDirIfNotExists() bool {
 }
 
 func CleanSessionSources() {
-	createTempDirIfNotExists()
-	for _, temp := range temps {
-		err := os.Remove(temp)
-		if err != nil {
-			panic(err)
+	if createTempDirIfNotExists() {
+		for _, temp := range temps {
+			removeSourceFile(temp)
 		}
 	}
 }
@@ -99,10 +98,7 @@ func CleanSource(code string) {
 		if err != nil {
 			panic(err)
 		}
-		err = os.Remove(path)
-		if err != nil {
-			panic(err)
-		}
+		removeSourceFile(path)
 		removeSourcePath(code)
 	}
 }
@@ -121,4 +117,14 @@ func removeSourcePath(code string) {
 	if idx != -1 {
 		temps = utils.RemoveIndex(temps, idx)
 	}
+}
+
+func removeSourceFile(temp string) {
+	fileCode := filepath.Base(temp)
+	err := os.Remove(temp)
+		if err != nil {
+			log.Log(log_categories.ERROR, "Cannot remove file \"" + fileCode + "\".")
+			panic(err)
+	}
+	log.Log(log_categories.INFO, "Temporal file \"" + fileCode + "\" deleted.")
 }

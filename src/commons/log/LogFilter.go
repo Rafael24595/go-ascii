@@ -8,17 +8,19 @@ import (
 
 type LogFilter struct {
 	category string
+	family string
 	from time.Time
 	to time.Time
 }
 
-func NewLogFilter(category string, from time.Time, to time.Time) LogFilter {
-	return LogFilter{category: category, from: from, to: to}
+func NewLogFilter(category string, family string, from time.Time, to time.Time) LogFilter {
+	return LogFilter{category: category, family: family, from: from, to: to}
 }
 
 func (this LogFilter) Filter(events []log_event.LogEvent) (filterEvents []log_event.LogEvent) {
 	filterEvents = events
 	filterEvents = this.categoryFilter(filterEvents)
+	filterEvents = this.familyFilter(filterEvents)
 	filterEvents = this.fromFilter(filterEvents)
 	filterEvents = this.toFilter(filterEvents)
 	return
@@ -32,6 +34,20 @@ func (this LogFilter) categoryFilter(events []log_event.LogEvent) (filterEvents 
 	filterEvents = []log_event.LogEvent{}
 	for _, event := range events {
 		if  strings.EqualFold(event.GetCategory(), this.category) {
+			filterEvents = append(filterEvents, event)
+		}
+	}
+	return 
+}
+
+func (this LogFilter) familyFilter(events []log_event.LogEvent) (filterEvents []log_event.LogEvent) {
+	if this.family == "" {
+		return events
+	}
+
+	filterEvents = []log_event.LogEvent{}
+	for _, event := range events {
+		if  strings.EqualFold(event.GetFamily(), this.family) {
 			filterEvents = append(filterEvents, event)
 		}
 	}

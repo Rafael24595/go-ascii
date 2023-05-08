@@ -1,0 +1,80 @@
+<style>
+    #container{
+        display: flex;
+    }
+    #box-2{
+        margin-left: 30px;
+    }
+</style>
+
+<p><b>Filter:</b></p>
+<form id="form" action="/api/log" view="/api/view/log" method="post">
+    <div id="container">
+        <div id="box-1">
+            <label for="category" title="Category">Category:</label><br>
+            <select id="category" name="category" value="">
+                <option value="" selected></option>
+                $OPT_CATEGORIES
+            </select><br>
+            <label for="family" title="Family">Family:</label><br>
+            <input type="text" id="family" name="family" value=""><br>
+        </div>
+        <div id="box-2">
+            <label for="from" title="From">From:</label><br>
+            <input type="datetime-local" id="from" name="from" value=""><br>
+            <label for="to" title="To">To:</label><br>
+            <input type="datetime-local" id="to" name="to" value=""><br><br>
+        </div>
+    </div>
+    <input type="submit" onclick="get(event)" value="Submit">
+</form>
+
+<script type="text/javascript">
+
+    const cacheParams = {$QUERYPARMS}
+
+    const loadCacheParams = () => {
+        for (const key of Object.keys(cacheParams)) {
+            const input = document.getElementById(key);
+            const value = cacheParams[key]
+            input.value = value
+        }
+    }
+
+    const get = async (e) => {
+        e.preventDefault();
+        const form = document.getElementById("form");
+        const url = form.action;
+        const view = form.getAttribute("view");
+        const params = buildQueryParams()
+
+        window.location.href = view + params;
+    }
+
+    const buildQueryParams = () => {
+        const category = document.getElementById("category");
+        const family = document.getElementById("family");
+        const from = document.getElementById("from");
+        const to = document.getElementById("to");
+
+        const map = {
+            "category": category.value,
+            "family": family.value,
+            "from": from.value != "" ? new Date(from.value).getTime() : 0,
+            "to": to.value != "" ? new Date(to.value).getTime() : 0
+        }
+
+        let params = []
+        for (const key of Object.keys(map)) {
+            const value = map[key]
+            if (value != NaN && value != "" && value != 0)
+                params.push(key + "=" + value)  
+        }
+
+        if(params.length > 0)
+            return "?" + params.join("&")
+        return ""
+    }
+
+    loadCacheParams()
+</script>

@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"net/http"
 	"github.com/gin-gonic/gin"
-	"go-ascii/src/service"
 	"go-ascii/src/commons/dto"
+	"go-ascii/src/service"
 )
 
 type ControllerRest struct {
@@ -22,35 +23,46 @@ func NewControllerRest(router *gin.Engine, service service.ServiceAscii) (contro
 }
 
 func (this ControllerRest) findAll(c *gin.Context, ) {
+	status := http.StatusOK
 	body := gin.H{
 		"message": this.service.FindAll(),
 	}
-	c.JSON(200, body)
+	c.JSON(status, body)
+	logRequest(c, Family, status)
 }
 
 func (this ControllerRest) find(c *gin.Context) {
+	status := http.StatusOK
 	code := c.Param("code")
 	image:= this.service.Find(code)
-	c.JSON(200, &image)
+	c.JSON(status, &image)
+	logRequest(c, Family, status)
 }
 
 func (this ControllerRest) insert(c *gin.Context) {
+	status := http.StatusOK
 	asciiRequest := dto.ImageRequest{}
 	err := c.BindJSON(&asciiRequest)
 	if err != nil {
-		c.JSON(500, err)
+		status = 500
+		c.JSON(status, err)
 	}
-	c.JSON(200, this.service.Insert(asciiRequest))
+	c.JSON(status, this.service.Insert(asciiRequest))
+	logRequest(c, Family, status)
 }
 
 func (this ControllerRest) modify(c *gin.Context) {
+	status := http.StatusOK
 	code := c.Param("code")
 	image:= this.service.Modify(code)
 	c.JSON(200, &image)
+	logRequest(c, Family, status)
 }
 
 func (this ControllerRest) delete(c *gin.Context) {
+	status := http.StatusOK
 	code := c.Param("code")
 	image:= this.service.Delete(code)
-	c.JSON(200, &image)
+	c.JSON(status, &image)
+	logRequest(c, Family, status)
 }

@@ -6,16 +6,17 @@ type LogEvent struct {
 	registerId int
 	sessionId string
 	category string
+	family string
 	message string
 	timestamp time.Time
 }
 
-func NewLogEvent(sessionId string, category string, message string, timestamp time.Time) LogEvent {
-	return LogEvent{sessionId: sessionId, category: category, message: message, timestamp: timestamp}
+func NewLogEvent(sessionId string, category string, family string, message string, timestamp time.Time) LogEvent {
+	return LogEvent{sessionId: sessionId, category: category, family: family, message: message, timestamp: timestamp}
 }
 
-func NewLogEventDB(registerId int, sessionId string, category string, message string, timestamp time.Time) LogEvent {
-	return LogEvent{registerId: registerId, sessionId: sessionId, category: category, message: message, timestamp: timestamp}
+func NewLogEventDB(registerId int, sessionId string, category string, family string, message string, timestamp time.Time) LogEvent {
+	return LogEvent{registerId: registerId, sessionId: sessionId, category: category, family: family, message: message, timestamp: timestamp}
 }
 
 func (this LogEvent) GetId() int {
@@ -28,6 +29,10 @@ func (this LogEvent) GetSessionId() string {
 
 func (this LogEvent) GetCategory() string {
 	return this.category
+}
+
+func (this LogEvent) GetFamily() string {
+	return this.family
 }
 
 func (this LogEvent) GetMessage() string {

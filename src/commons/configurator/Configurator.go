@@ -7,13 +7,18 @@ import (
 	"go-ascii/src/commons/dependency-container"
 	"go-ascii/src/commons/dependency-container/dependency-dictionary"
 	"go-ascii/src/commons/log"
+	"go-ascii/src/commons/constants/log-categories"
 )
 
 func LoadConfiguration() (configuration.Configuration, dependency_container.DependencyContainer) {
 	rawConfig := loadArgsFromEnv()
 	configuration := buildConfiguration(rawConfig)
+	_ = buildLogDependency(rawConfig)
+	log.Log(log_categories.INFO, "Loading configuration...")
+	log.Log(log_categories.INFO, "Session id established: "+ configuration.GetSessionId() +"")
+	log.Log(log_categories.INFO, "Start date: "+ configuration.GetTimestamp().String() +"")
 	dependencyContainer := buildDependencyContainer(rawConfig)
-	log.Log("INFO", "Configuration loaded successfully.")
+	log.Log(log_categories.INFO, "Configuration loaded successfully.")
 	return configuration, dependencyContainer
 }
 
@@ -39,17 +44,22 @@ func loadArgsFromEnv() map[string]string {
     })
 }
 
+func buildLogDependency(rawConfig map[string]string) log.LogService {
+	configuration := configuration.GetInstance()
+	args := configuration.GetArgs()
+
+	loggerKey := configuration.GetArg("GO_ASCII_LOGGER")
+	loggerDependency := dependency_dictionary.FindLoggerDependency(loggerKey, args)
+	service := log.Instance(loggerDependency)
+	loggerDependency.OnLoad()
+
+	return *service
+}
+
 func buildDependencyContainer(rawConfig map[string]string) dependency_container.DependencyContainer {
 	configuration := configuration.GetInstance()
 	args := configuration.GetArgs()
 	dependencyContainer := dependency_container.GetInstance()
-
-	loggerKey := configuration.GetArg("GO_ASCII_LOGGER")
-	loggerDependency := dependency_dictionary.FindLoggerDependency(loggerKey, args)
-	log.Instance(loggerDependency)
-	loggerDependency.OnLoad()
-
-	log.Log("INFO", "Loading configuration...")
 
 	logRepositoryKey := configuration.GetArg("GO_ASCII_LOG_REPOSITORY")
 	logRepositoryDependency := dependency_dictionary.FindLogDependency(logRepositoryKey, args)

@@ -1,9 +1,7 @@
 package dependency_dictionary
 
 import (
-	"go-ascii/src/commons"
 	"go-ascii/src/commons/dependency-container"
-	"go-ascii/src/commons/log"
 	"go-ascii/src/commons/log/logger"
 	"go-ascii/src/commons/log/logger/postgres"
 	"go-ascii/src/infrastructure/repository"
@@ -21,12 +19,11 @@ func FindLoggerDependency(code string, args map[string]string) logger.Logger {
 
 func FindLogDependency(code string, args map[string]string) (dependency repository.RepositoryLog) {
 	switch code {
-		case postgres_repository.RepositoryLogPostgresKey:
-			dependency = postgres_repository.NewRepositoryLogPostgres(args)
+		case postgres_repository.LogRepositoryPostgresKey:
+			dependency = postgres_repository.NewLogRepositoryPostgres(args)
 		default:
 			panic("Dependency does not exists.")
     } 
-	logDependency(dependency)
 	return 
 }
 
@@ -37,7 +34,6 @@ func FindQueryDependency(code string, args map[string]string) (dependency reposi
 		default:
 			panic("Dependency does not exists.")
     } 
-	logDependency(dependency)
 	return 
 }
 
@@ -52,10 +48,5 @@ func FindCommandDependency(code string, args map[string]string) (dependency repo
 		default:
 			panic("Dependency does not exists.")
     } 
-	logDependency(dependency)
 	return 
-}
-
-func logDependency(dependency commons.Dependency) {
-	log.Log("INFO", "Loaded dependency '" + dependency.DependencyName() + "'.")
 }

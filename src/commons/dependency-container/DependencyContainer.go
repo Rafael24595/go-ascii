@@ -1,7 +1,10 @@
 package dependency_container
 
 import (
+	"go-ascii/src/commons"
+	"go-ascii/src/commons/log"
 	"go-ascii/src/infrastructure/repository"
+	"go-ascii/src/commons/constants/log-categories"
 )
 
 type DependencyContainer struct {
@@ -28,6 +31,7 @@ func (this *DependencyContainer) GetLogRepository() repository.RepositoryLog {
 
 func (this *DependencyContainer) SetLogRepository(dependency repository.RepositoryLog ) {
 	this.logRepository = dependency
+	this.logLoadDependency(dependency)
 }
 
 func (this *DependencyContainer) GetQueryRepository() repository.QueryRepository {
@@ -39,6 +43,7 @@ func (this *DependencyContainer) GetQueryRepository() repository.QueryRepository
 
 func (this *DependencyContainer) SetQueryRepository(dependency repository.QueryRepository ) {
 	this.queryRepository = dependency
+	this.logLoadDependency(dependency)
 }
 
 func (this *DependencyContainer) GetCommandRepository() repository.CommandRepository {
@@ -50,14 +55,21 @@ func (this *DependencyContainer) GetCommandRepository() repository.CommandReposi
 
 func (this *DependencyContainer) SetCommandRepository(dependency repository.CommandRepository ) {
 	this.commandRepository = dependency
+	this.logLoadDependency(dependency)
 }
 
 func (this *DependencyContainer) OnLoad() {
+	log.Log(log_categories.INFO, "Initializing dependencies...")
 	this.queryRepository.OnLoad()
 	this.commandRepository.OnLoad()
+	log.Log(log_categories.INFO, "Dependencies initialized successfully.")
 }
 
 func (this *DependencyContainer) OnExit() {
 	this.queryRepository.OnExit()
 	this.commandRepository.OnExit()
+}
+
+func (this *DependencyContainer) logLoadDependency(dependency commons.Dependency) {
+	log.Log(log_categories.INFO, "Dependency \"" + dependency.DependencyName() + "\" loaded.")
 }

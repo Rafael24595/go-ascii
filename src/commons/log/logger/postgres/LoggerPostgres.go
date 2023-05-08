@@ -71,7 +71,7 @@ func (this LoggerPostgres) OnExit() bool {
 
 func (this LoggerPostgres) Log(event log_event.LogEvent) string {
 	insertDynStmt := postgres_catalog.GetSource(postgres_catalog.PG_INSERT_REGISTER)
-    _, err := this.dataBase.Exec(insertDynStmt, event.GetSessionId(), event.GetCategory(), event.GetMessage(), event.GetTimestamp())
+    _, err := this.dataBase.Exec(insertDynStmt, event.GetSessionId(), event.GetCategory(), event.GetFamily(), event.GetMessage(), event.GetTimestamp().UnixMilli())
     if err != nil {
 		panic(err)
 	}

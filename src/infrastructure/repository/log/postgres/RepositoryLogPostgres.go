@@ -1,22 +1,23 @@
 package postgres_repository
 
 import (
+	"time"
+	"strings"
 	"database/sql"
 	"go-ascii/src/commons/configurator/configuration"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/commons/log/event"
 	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/infrastructure/repository/log/postgres/catalog"
-	"strings"
 )
 
-const RepositoryLogPostgresKey = "RepositoryLogPostgres"
+const LogRepositoryPostgresKey = "LogRepositoryPostgres"
 
-type RepositoryLogPostgres struct {
+type LogRepositoryPostgres struct {
 	dataBase *sql.DB
 }
 
-func NewRepositoryLogPostgres(args map[string]string) repository.RepositoryLog {
+func NewLogRepositoryPostgres(args map[string]string) repository.RepositoryLog {
 	connStr := getConnectionUri(args)
 	dataBase, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -25,7 +26,7 @@ func NewRepositoryLogPostgres(args map[string]string) repository.RepositoryLog {
 	if err = dataBase.Ping(); err != nil {
 		panic(err)
 	}
-	return RepositoryLogPostgres{dataBase: dataBase}
+	return LogRepositoryPostgres{dataBase: dataBase}
 }
 
 func getConnectionUri(args map[string]string) string {
@@ -50,19 +51,19 @@ func getConnectionUri(args map[string]string) string {
 	return connection.String()
 }
 
-func (this RepositoryLogPostgres) DependencyName() string {
-	return RepositoryLogPostgresKey
+func (this LogRepositoryPostgres) DependencyName() string {
+	return LogRepositoryPostgresKey
 }
 
-func (this RepositoryLogPostgres) OnLoad() bool {
+func (this LogRepositoryPostgres) OnLoad() bool {
 	return true
 }
 
-func (this RepositoryLogPostgres) OnExit() bool {
+func (this LogRepositoryPostgres) OnExit() bool {
 	return true
 }
 
-func (this RepositoryLogPostgres) FindAll() (logs []log_event.LogEvent) {
+func (this LogRepositoryPostgres) FilterLog() (logs []log_event.LogEvent) {
 	configuration := configuration.GetInstance()
 	query := postgres_catalog.GetSource(postgres_catalog.PG_FIND_ALL_REGISTER)
 	rows, err := this.dataBase.Query(query, configuration.GetSessionId())
@@ -74,34 +75,24 @@ func (this RepositoryLogPostgres) FindAll() (logs []log_event.LogEvent) {
 	return this.rowsToLogEvent(rows)
 }
 
-func (this RepositoryLogPostgres) Find(category string) []log_event.LogEvent{
-	query := postgres_catalog.GetSource(postgres_catalog.PG_FIND_CATEGORY_REGISTER)
-	rows, err := this.dataBase.Query(query, category)
-    if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-	
-	return this.rowsToLogEvent(rows)
-}
-
-func (this RepositoryLogPostgres) rowsToLogEvent(rows *sql.Rows) (logs []log_event.LogEvent) {
+func (this LogRepositoryPostgres) rowsToLogEvent(rows *sql.Rows) (logs []log_event.LogEvent) {
 	dtos := make([]dto.InfoLogResponse, 0)
 
 	for rows.Next() {
 		dto := dto.InfoLogResponse{}
-		err := rows.Scan(&dto.Id, &dto.SessionId, &dto.Category, &dto.Message, &dto.Timestamp)
+		err := rows.Scan(&dto.Id, &dto.SessionId, &dto.Category, &dto.Family, &dto.Message, &dto.Timestamp)
 		if err != nil {
 			panic(err)
 		}
+		
 		dtos = append(dtos, dto)
 	}
 
 	logs = make([]log_event.LogEvent, 0)
 
 	for _, dto := range dtos {
-		log := log_event.NewLogEventDB(dto.Id, dto.SessionId, dto.Category, dto.Message, dto.Timestamp)
-
+		timestamp := time.Unix(0, int64(dto.Timestamp) * int64(time.Millisecond))
+		log := log_event.NewLogEventDB(dto.Id, dto.SessionId, dto.Category, dto.Family, dto.Message, timestamp)
 		logs = append(logs, log)
 	}
 

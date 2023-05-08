@@ -23,9 +23,9 @@ func NewControllerLog(router *gin.Engine, service service.ServiceLog) (controlle
 }
 
 func (this ControllerLog) filterLog(c *gin.Context) {
-	dto := dto.NewLogParamsRequest(c.Query("category"), c.Query("from"), c.Query("to"))
+	dto := dto.NewLogParamsRequest(c.Query("category"), c.Query("family"), c.Query("from"), c.Query("to"))
 	body := gin.H{
-		"message": this.service.FindAll(dto),
+		"message": this.service.FilterLog(dto),
 	}
 	c.JSON(200, body)
 }

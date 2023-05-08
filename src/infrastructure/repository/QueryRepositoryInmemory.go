@@ -2,7 +2,9 @@ package repository
 
 import (
 	"sort"
+	"go-ascii/src/commons/log"
 	"go-ascii/src/domain/ascii"
+	"go-ascii/src/commons/constants/log-categories"
 )
 
 const QueryRepositoryInmemoryKey = "QueryRepositoryInmemory"
@@ -20,13 +22,16 @@ func (this QueryRepositoryInmemory) DependencyName() string {
 }
 
 func (this QueryRepositoryInmemory) OnLoad() bool {
+	log.Log(log_categories.INFO, "Initializing \"" + this.DependencyName() + "\" dependency...")
+	log.Log(log_categories.INFO, "'" + this.DependencyName() + "' dependency was initialized successfully.")
 	return true
 }
 
 func (this QueryRepositoryInmemory) OnExit() bool {
+	log.Log(log_categories.INFO, "Exiting \"" + this.DependencyName() + "\" dependency...")
+	log.Log(log_categories.INFO, "\"" + this.DependencyName() + "\" dependency was exited successfully.")
 	return true
 }
-
 func (this QueryRepositoryInmemory) FindAll() (info []ascii.ImageInfo) {
 	info = make([]ascii.ImageInfo, 0, len(this.storage))
 	for key := range this.storage {
@@ -35,7 +40,7 @@ func (this QueryRepositoryInmemory) FindAll() (info []ascii.ImageInfo) {
 		info = append(info, data)
 	}
 	sort.Slice(info[:], func(i, j int) bool {
-		return info[i].GetTimestamp().UnixMicro() < info[j].GetTimestamp().UnixMicro()
+		return info[i].GetTimestamp().UnixMilli() < info[j].GetTimestamp().UnixMilli()
 	})
 	return
 }

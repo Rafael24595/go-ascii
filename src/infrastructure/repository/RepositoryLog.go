@@ -7,6 +7,5 @@ import (
 
 type RepositoryLog interface {
 	commons.Dependency
-	FindAll() []log_event.LogEvent
-	Find(cattegory string) []log_event.LogEvent
+	FilterLog() []log_event.LogEvent
 }

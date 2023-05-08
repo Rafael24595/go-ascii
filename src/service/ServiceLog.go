@@ -16,28 +16,20 @@ func NewServiceLog(logRepository repository.RepositoryLog) ServiceLog {
 	return ServiceLog{logRepository: logRepository}
 }
 
-func (this ServiceLog) FindAll(logParams dto.LogParamsRequest) (response []dto.InfoLogResponse) {
+func (this ServiceLog) FilterLog(logParams dto.LogParamsRequest) (response []dto.InfoLogResponse) {
 	logFilter := this.buildLogFilter(logParams)
-	logs := this.logRepository.FindAll()
+	logs := this.logRepository.FilterLog()
 	logs = logFilter.Filter(logs)
 	response = []dto.InfoLogResponse{}
 	for _, log := range logs {
-		response = append(response, dto.InfoLogResponse{SessionId: log.GetSessionId(),Category: log.GetCategory(), Message: log.GetMessage(), Timestamp: log.GetTimestamp()})
-	}
-	return
-}
-
-func (this ServiceLog) Find(category string) (response []dto.InfoLogResponse) {
-	logs := this.logRepository.Find(category)
-	response = []dto.InfoLogResponse{}
-	for _, log := range logs {
-		response = append(response, dto.InfoLogResponse{SessionId: log.GetSessionId(),Category: log.GetCategory(), Message: log.GetMessage(), Timestamp: log.GetTimestamp()})
+		response = append(response, dto.NewInfoLogResponse(log.GetId(), log.GetSessionId(), log.GetCategory(), log.GetFamily(), log.GetMessage(), log.GetTimestamp().UnixMilli()))
 	}
 	return
 }
 
 func (this ServiceLog) buildLogFilter(logParams dto.LogParamsRequest) log.LogFilter {
 	category := logParams.Category
+	family := logParams.Family
 
 	fromMilis, err := utils.ParseInt64(logParams.From)
     if err != nil {
@@ -57,5 +49,5 @@ func (this ServiceLog) buildLogFilter(logParams dto.LogParamsRequest) log.LogFil
 		to = time.Unix(0, int64(toMilis) * int64(time.Millisecond))
 	}
 
-	return log.NewLogFilter(category, from, to)
+	return log.NewLogFilter(category, family, from, to)
 }

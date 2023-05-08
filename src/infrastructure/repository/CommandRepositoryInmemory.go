@@ -1,8 +1,10 @@
 package repository
 
 import (
-	request_state "go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/commons/log"
 	"go-ascii/src/domain/ascii"
+	"go-ascii/src/commons/constants/log-categories"
 )
 
 const CommandRepositoryInmemoryKey = "CommandRepositoryInmemory"
@@ -20,10 +22,14 @@ func (this CommandRepositoryInmemory) DependencyName() string {
 }
 
 func (this CommandRepositoryInmemory) OnLoad() bool {
+	log.Log(log_categories.INFO, "Initializing \"" + this.DependencyName() + "\" dependency...")
+	log.Log(log_categories.INFO, "\"" + this.DependencyName() + "\" dependency was initialized successfully.")
 	return true
 }
 
 func (this CommandRepositoryInmemory) OnExit() bool {
+	log.Log(log_categories.INFO, "Exiting \"" + this.DependencyName() + "\" dependency...")
+	log.Log(log_categories.INFO, "\"" + this.DependencyName() + "\" dependency was exited successfully.")
 	return true
 }
 

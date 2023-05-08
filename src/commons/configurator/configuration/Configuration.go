@@ -6,7 +6,7 @@ import (
 	"go-ascii/src/commons/utils"
 )
 
-const serviceName = "go-ascii"
+const serviceName = "GO-ASCII"
 
 var configuration *Configuration
 
