@@ -1,12 +1,39 @@
 version: "3.3"
 services:
+  kong:
+    container_name: kong-go
+    image: kong:latest
+    volumes:
+      - ./kong/kong.yml:/usr/local/kong/declarative/kong.yml
+      - ./kong/plugins/go-auth/go-auth:/usr/local/bin/go-auth
+    environment:
+      - KONG_DATABASE=off
+      - KONG_DECLARATIVE_CONFIG=/usr/local/kong/declarative/kong.yml
+      - KONG_PLUGINS=go-auth
+      - KONG_PLUGINSERVER_NAMES=go-auth
+      - KONG_PLUGINSERVER_GO_AUTH_QUERY_CMD=/usr/local/bin/go-auth -dump
+      - KONG_LOG_LEVEL=info
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8444:8444"
+    networks: 
+      - asciiweb
   web:
     container_name: goascii
     image: go-ascii
     build: .
     restart: always
     ports:
-     - "8080:8080"
+     - 8080
+    networks: 
+      - asciiweb
     environment:
       - GO_ASCII_DOMAIN=0.0.0.0
       - GO_ASCII_PORT=8080
@@ -33,22 +60,12 @@ services:
     volumes:
       - ./mongodb:/data/db
     ports:
-      - "27017:27017"
+      - 27017
+    networks: 
+      - asciiweb
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=example
-  mongo-express:
-    container_name: mongoexpress
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=example
-    depends_on:
-      - mongodb
   postgres:
     container_name: postgresdb
     image: postgres:10.5
@@ -57,7 +74,12 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - 5432:5432
+      - 5432
     volumes: 
       - ./postgres-data:/var/lib/postgresql/data
       - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    networks: 
+      - asciiweb
+networks:
+  asciiweb:
+    name: ascii-web

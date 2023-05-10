@@ -1,0 +1,13 @@
+_format_version: "2.1"
+
+services:
+  - name: go-ascii-service
+    url: http://goascii:8080/api
+    routes:
+      - name: go-ascii-route
+        paths:
+          - /api
+    plugins:
+      - name: go-auth
+        config:
+          waittime: 0
