@@ -8,6 +8,4 @@ services:
         paths:
           - /api
     plugins:
-      - name: go-auth
-        config:
-          waittime: 0
+      - name: py-auth
