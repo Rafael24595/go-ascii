@@ -1,4 +1,4 @@
-package postgres_repository
+package log_repository
 
 import (
 	"time"

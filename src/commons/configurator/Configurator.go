@@ -1,18 +1,20 @@
 package configurator
 
 import (
-	"os"
-	"strings"
 	"go-ascii/src/commons/configurator/configuration"
+	"go-ascii/src/commons/constants/log-categories"
 	"go-ascii/src/commons/dependency-container"
 	"go-ascii/src/commons/dependency-container/dependency-dictionary"
 	"go-ascii/src/commons/log"
-	"go-ascii/src/commons/constants/log-categories"
+	"go-ascii/src/infrastructure/cache"
+	"os"
+	"strings"
 )
 
 func LoadConfiguration() (configuration.Configuration, dependency_container.DependencyContainer) {
 	rawConfig := loadArgsFromEnv()
 	configuration := buildConfiguration(rawConfig)
+	_ = buildCacheDependency(rawConfig)
 	_ = buildLogDependency(rawConfig)
 	log.Log(log_categories.INFO, "Loading configuration...")
 	log.Log(log_categories.INFO, "Session id established: "+ configuration.GetSessionId() +"")
@@ -42,6 +44,20 @@ func loadArgsFromEnv() map[string]string {
         val = splits[1]
         return
     })
+}
+
+func buildCacheDependency(rawConfig map[string]string) *cache.Cache {
+	configuration := configuration.GetInstance()
+	args := configuration.GetArgs()
+
+	cacheKey := configuration.GetArg("GO_ASCII_CACHE")
+	cacheDependency := dependency_dictionary.FindCacheDependency(cacheKey, args)
+	cacheDependency.OnLoad()
+
+	dependencyContainer := dependency_container.GetInstance()
+	dependencyContainer.SetCache(cacheDependency)
+
+	return &cacheDependency
 }
 
 func buildLogDependency(rawConfig map[string]string) log.LogService {

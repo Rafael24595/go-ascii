@@ -2,15 +2,17 @@ package dependency_container
 
 import (
 	"go-ascii/src/commons"
-	"go-ascii/src/commons/log"
-	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/commons/constants/log-categories"
+	"go-ascii/src/commons/log"
+	"go-ascii/src/infrastructure/cache"
+	"go-ascii/src/infrastructure/repository"
 )
 
 type DependencyContainer struct {
 	logRepository repository.RepositoryLog
 	queryRepository repository.QueryRepository
 	commandRepository repository.CommandRepository
+	cache cache.Cache
 }
 
 var dependencyContainer *DependencyContainer
@@ -56,6 +58,17 @@ func (this *DependencyContainer) GetCommandRepository() repository.CommandReposi
 func (this *DependencyContainer) SetCommandRepository(dependency repository.CommandRepository ) {
 	this.commandRepository = dependency
 	this.logLoadDependency(dependency)
+}
+
+func (this *DependencyContainer) GetCache() cache.Cache {
+	if this.cache != nil {
+		return this.cache
+	}
+	panic("Dependency not found.")
+}
+
+func (this *DependencyContainer) SetCache(dependency cache.Cache) {
+	this.cache = dependency
 }
 
 func (this *DependencyContainer) OnLoad() {

@@ -1,4 +1,4 @@
-package logger_postgres
+package logger_repository
 
 import (
 	"database/sql"
