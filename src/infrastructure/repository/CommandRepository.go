@@ -10,5 +10,6 @@ type CommandRepository interface {
 	Insert(image ascii.ImageAscii) string
 	Modify(image ascii.ImageAscii) string
 	Delete(image ascii.ImageAscii) string
+	//@Deprecated
 	ToQuery(image ascii.ImageAscii)
 }

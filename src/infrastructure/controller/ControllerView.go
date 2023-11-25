@@ -42,7 +42,7 @@ func (this ControllerView) findAllAscii(c *gin.Context) {
 func (this ControllerView) findAscii(c *gin.Context) {
 	status := http.StatusOK
 	code := c.Param("code")
-	image := this.serviceAscii.Find(code)
+	image, _ := this.serviceAscii.Find(code)
 	builder := ascii_view.NewAsciiViewBuilder(image, this.findAsciiArgs(c))
 	c.Data(status, "text/html; charset=utf-8", []byte(builder.Build()))
 	logRequest(c, Family, status)

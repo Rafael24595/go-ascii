@@ -8,6 +8,7 @@ import (
 type QueryRepository interface {
 	commons.Dependency
 	FindAll() []ascii.ImageInfo
-	Find(code string) ascii.ImageAscii
+	Find(code string) (ascii.ImageAscii, bool)
+	//@Deprecated
 	InsertCommand(ascii.ImageAscii)
 }

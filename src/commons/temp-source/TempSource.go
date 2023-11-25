@@ -69,8 +69,8 @@ func buildFileName(code string) (name string) {
 func isCodePersisted(code string) bool {
 	depencencyContainer := dependency_container.GetInstance()
 	queryRepository := depencencyContainer.GetQueryRepository()
-	image := queryRepository.Find(code)
-	return image.GetStatus() != ""
+	image, ok := queryRepository.Find(code)
+	return ok && image.GetStatus() != ""
 }
 
 func createTempDirIfNotExists() bool {

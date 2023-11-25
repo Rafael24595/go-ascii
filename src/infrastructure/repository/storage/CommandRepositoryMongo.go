@@ -1,29 +1,31 @@
-package repository
+package storage
 
 import (
-	"time"
-	"strconv"
-	"strings"
 	"context"
 	"encoding/base64"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go-ascii/src/commons/constants/log-categories"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/commons/log"
 	"go-ascii/src/domain/ascii"
-	"go-ascii/src/commons/constants/log-categories"
+	"go-ascii/src/infrastructure/repository"
+	"strconv"
+	"strings"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const CommandRepositoryMongoKey = "CommandRepositoryMongo"
 
 type CommandRepositoryMongo struct {
-	queryRepository QueryRepository
+	queryRepository repository.QueryRepository
 	collection mongo.Collection
 }
 
-func NewCommandRepositoryMongo(queryRepository QueryRepository, args map[string]string) CommandRepository {
+func NewCommandRepositoryMongo(queryRepository repository.QueryRepository, args map[string]string) repository.CommandRepository {
 	connection := getConnectionUri(args)
 	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
 	defer cancel()

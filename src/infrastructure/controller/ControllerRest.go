@@ -34,7 +34,10 @@ func (this ControllerRest) findAll(c *gin.Context, ) {
 func (this ControllerRest) find(c *gin.Context) {
 	status := http.StatusOK
 	code := c.Param("code")
-	image:= this.service.Find(code)
+	image, ok:= this.service.Find(code)
+	if !ok {
+		c.JSON(404, &image)
+	}
 	c.JSON(status, &image)
 	logRequest(c, Family, status)
 }
@@ -54,15 +57,24 @@ func (this ControllerRest) insert(c *gin.Context) {
 func (this ControllerRest) modify(c *gin.Context) {
 	status := http.StatusOK
 	code := c.Param("code")
-	image:= this.service.Modify(code)
-	c.JSON(200, &image)
+	image, ok := this.service.Modify(code)
+	if ok {
+		c.JSON(200, &image)
+	} else {
+		c.JSON(404, &image)
+	}
 	logRequest(c, Family, status)
 }
 
 func (this ControllerRest) delete(c *gin.Context) {
 	status := http.StatusOK
 	code := c.Param("code")
-	image:= this.service.Delete(code)
+	image, ok := this.service.Delete(code)
+	if ok {
+		c.JSON(200, &image)
+	} else {
+		c.JSON(404, &image)
+	}
 	c.JSON(status, &image)
 	logRequest(c, Family, status)
 }

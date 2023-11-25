@@ -7,6 +7,7 @@ import (
 	"go-ascii/src/infrastructure/cache"
 	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/infrastructure/repository/log/postgres"
+	"go-ascii/src/infrastructure/repository/storage"
 )
 
 func FindLoggerDependency(code string, args map[string]string) logger.Logger {
@@ -34,8 +35,8 @@ func FindLogDependency(code string, args map[string]string) (dependency reposito
 
 func FindQueryDependency(code string, args map[string]string) (dependency repository.QueryRepository) {
 	switch code {
-		case repository.QueryRepositoryInmemoryKey:
-			dependency = repository.NewQueryRepositoryInmemory()
+		case storage.QueryRepositoryInmemoryKey:
+			dependency = storage.NewQueryRepositoryInmemory(args)
 		default:
 			panic("Dependency does not exists.")
     } 
@@ -44,12 +45,11 @@ func FindQueryDependency(code string, args map[string]string) (dependency reposi
 
 func FindCommandDependency(code string, args map[string]string) (dependency repository.CommandRepository) {
 	switch code {
-		case repository.CommandRepositoryInmemoryKey:
+		case storage.CommandRepositoryInmemoryKey:
+			dependency = storage.NewCommandRepositoryInmemory(args)
+		case storage.CommandRepositoryMongoKey:
 			repo := dependency_container.GetInstance().GetQueryRepository()
-			dependency = repository.NewCommandRepositoryInmemory(repo)
-		case repository.CommandRepositoryMongoKey:
-			repo := dependency_container.GetInstance().GetQueryRepository()
-			dependency = repository.NewCommandRepositoryMongo(repo, args)
+			dependency = storage.NewCommandRepositoryMongo(repo, args)
 		default:
 			panic("Dependency does not exists.")
     } 

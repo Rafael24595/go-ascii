@@ -1,9 +1,10 @@
 package service
 
 import (
-	"go-ascii/src/commons/dto"
-	"go-ascii/src/infrastructure/repository"
 	"go-ascii/src/commons/constants/request-state"
+	"go-ascii/src/commons/dto"
+	"go-ascii/src/domain/ascii"
+	"go-ascii/src/infrastructure/repository"
 )
 
 type ServiceAscii struct {
@@ -26,8 +27,11 @@ func (this ServiceAscii) FindAll() (response []dto.InfoResponse) {
 	return
 }
 
-func (this ServiceAscii) Find(code string) dto.InfoAsciiResponse {
-	image := this.queryRepository.Find(code)
+func (this ServiceAscii) Find(code string) (dto.InfoAsciiResponse, bool) {
+	image, ok := this.queryRepository.Find(code)
+	if !ok {
+		image = ascii.ImageAscii{}
+	}
 	height, width := image.GetDimensions()
 	response := dto.InfoAsciiResponse{Name: image.GetName(), Height: height, Width: width, Extension: image.GetExtension(), Status: image.GetStatus(), Frames: image.GetFrames()}
 	if response.Status == "" {
@@ -37,21 +41,27 @@ func (this ServiceAscii) Find(code string) dto.InfoAsciiResponse {
 		response.Name = code
 		response.Extension = "Undefined"
 	}
-	return response
+	return response, ok
 }
 
 func (this ServiceAscii) Insert(dto dto.ImageRequest) string {
 	return this.requestLauncher.PushAsciiRequest(dto)
 }
 
-func (this ServiceAscii) Modify(code string) string {
-	image := this.queryRepository.Find(code)
+func (this ServiceAscii) Modify(code string) (string, bool) {
+	image, ok := this.queryRepository.Find(code)
+	if !ok {
+		return code, false
+	}
 	image.SetStatus(request_state.RESTORED)
-	return this.commandRepository.Modify(image)
+	return this.commandRepository.Modify(image), true
 }
 
-func (this ServiceAscii) Delete(code string) string {
-	image := this.queryRepository.Find(code)
+func (this ServiceAscii) Delete(code string) (string, bool) {
+	image, ok := this.queryRepository.Find(code)
+	if !ok {
+		return code, false
+	}
 	image.SetStatus(request_state.DELETED)
-	return this.commandRepository.Delete(image)
+	return this.commandRepository.Delete(image), true
 }
