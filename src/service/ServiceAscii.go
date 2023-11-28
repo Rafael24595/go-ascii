@@ -1,6 +1,7 @@
 package service
 
 import (
+	"go-ascii/src/commons/constants/gray-scale"
 	"go-ascii/src/commons/constants/request-state"
 	"go-ascii/src/commons/dto"
 	"go-ascii/src/domain/ascii"
@@ -16,6 +17,14 @@ type ServiceAscii struct {
 func NewServiceAscii(queryRepository repository.QueryRepository, commandRepository repository.CommandRepository) ServiceAscii {
 	requestLauncher := NewRequestLauncher(commandRepository);
 	return ServiceAscii{queryRepository: queryRepository, commandRepository: commandRepository, requestLauncher: requestLauncher}
+}
+
+func (this ServiceAscii) TakeGrayScales() (response []dto.InfoGrayScaleResponse) {
+	response = []dto.InfoGrayScaleResponse{}
+	for _, data := range gray_scale.GetGrayScaleList() {
+		response = append(response, dto.InfoGrayScaleResponse{Id: data, Description: data})
+	}
+	return
 }
 
 func (this ServiceAscii) FindAll() (response []dto.InfoResponse) {

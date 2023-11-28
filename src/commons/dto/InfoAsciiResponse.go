@@ -1,13 +1,13 @@
 package dto
 
 type InfoAsciiResponse struct {
-	Name string
-	Extension string
-	Height int
-	Width int
-	Status string
-	Message string
-	Frames []string
+	Name      string   `bson:"name" json:"name"`
+	Extension string   `bson:"extension" json:"extension"`
+	Height    int      `bson:"height" json:"height"`
+	Width     int      `bson:"width" json:"width"`
+	Status    string   `bson:"status" json:"status"`
+	Message   string   `bson:"message" json:"message"`
+	Frames    []string `bson:"frames" json:"frames"`
 }
 
 func NewInfoAsciiResponse(name string, extension string, height int, width int, status string, message string, frames []string) InfoAsciiResponse {

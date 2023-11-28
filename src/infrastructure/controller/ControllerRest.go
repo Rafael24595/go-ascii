@@ -14,12 +14,19 @@ type ControllerRest struct {
 
 func NewControllerRest(router *gin.Engine, service service.ServiceAscii) (controller ControllerRest) {
 	controller = ControllerRest{service: service, routerGroup: *router.Group("/api")}
+	controller.routerGroup.GET("/gray_scale", controller.takeGrayScales)
 	controller.routerGroup.GET("/ascii", controller.findAll)
 	controller.routerGroup.GET("/ascii/:code", controller.find)
 	controller.routerGroup.POST("/ascii", controller.insert)
 	controller.routerGroup.PUT("/ascii/:code", controller.modify)
 	controller.routerGroup.DELETE("/ascii/:code", controller.delete)
 	return
+}
+
+func (this ControllerRest) takeGrayScales(c *gin.Context, ) {
+	status := http.StatusOK
+	c.JSON(status, this.service.TakeGrayScales())
+	logRequest(c, Family, status)
 }
 
 func (this ControllerRest) findAll(c *gin.Context, ) {
